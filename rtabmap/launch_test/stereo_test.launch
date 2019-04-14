@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <arg name="stereo_namespace"        default="/stereo"/>
+    <arg name="wait_for_transform"      default="0.2"/>
+    <arg name="approx_sync"             default="true"/>
+
+    <node pkg="rtabmap_ros" type="stereo_odometry" name="stereo_odometry" output="screen">
+
+        <remap from="left/image_rect"        to="$(arg stereo_namespace)/left/image_rect"/>
+        <remap from="right/image_rect"       to="$(arg stereo_namespace)/right/image_rect"/>
+        <remap from="left/camera_info"       to="$(arg stereo_namespace)/left/camera_info"/>
+        <remap from="right/camera_info"      to="$(arg stereo_namespace)/right/camera_info"/>
+        <remap from="right/camera_info"      to="$(arg stereo_namespace)/right/camera_info"/>
+
+        <param name="publish_tf"                  type="bool"   value="false"/>
+
+        <param name="wait_for_transform_duration" type="double" value="$(arg wait_for_transform)"/>
+        <param name="approx_sync"                 type="bool"   value="$(arg approx_sync)"/>
+        <param name="queue_size"                  type="int"    value="10"/>
+        <param name="publish_null_when_lost"      type="bool"   value="false"/>
+
+        <param name="frame_id"                    type="string" value="base_footprint"/>
+        <param name="odom_frame_id"               type="string" value="vo"/>
+
+        <param name="config_path"                 type="string" value="~/.rtabmap/rtabmap.ini"/> 
+
+        <param name="Odom/ResetCountdown"         type="int"    value="1"/> 
+    </node>
+
+</launch>

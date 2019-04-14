@@ -1,0 +1,117 @@
+<launch>
+
+  <arg name="database_path"     default="rtabmap.db"/>
+  <arg name="localization"      default="false"/>
+  <arg name="rgbd_odometry"     default="false"/>
+  <arg name="args"              default="--delete_db_on_start"/>
+  <arg name="rtabmapviz"        default="false"/>
+  <arg name="simulation"        default="false"/>
+
+  <arg     if="$(arg simulation)" name="rgb_topic"   default="/stereo/left/image_rect"/>
+  <arg unless="$(arg simulation)" name="rgb_topic"   default="/stereo/left/image_rect"/>
+  <arg     if="$(arg simulation)" name="depth_topic" default="/depth_ghc"/>
+  <arg unless="$(arg simulation)" name="depth_topic" default="/depth_ghc"/>
+  <arg name="camera_info_topic" default="/stereo/left/camera_info"/>
+  <arg name="pointcloud_topic" default="/voxel_cloud"/>
+  <!-- <arg name="pointcloud_topic" default="/points_passthrough/points"/> -->
+  <arg name="obstacles_topic" default="/planner_cloud"/>
+  <arg name="robot_base_frame" default="base_footprint"/>
+  <arg name="map_frame" default="map"/>
+
+  
+  <arg name="wait_for_transform"  default="0.2"/> 
+  <!-- 
+      robot_state_publisher's publishing frequency in "turtlebot_bringup/launch/includes/robot.launch.xml" 
+      can be increase from 5 to 10 Hz to avoid some TF warnings.
+  -->
+  
+  <!-- Mapping -->
+  <group ns="rtabmap">
+
+    <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="log" args="$(arg args)">
+	  <param name="database_path"       type="string" value="$(arg database_path)"/>
+	  <param name="frame_id"            type="string" value="base_footprint"/>
+	  <param name="odom_frame_id"       type="string" value="odom"/>
+	  <param name="wait_for_transform_duration"  type="double"   value="$(arg wait_for_transform)"/>
+	  <param name="subscribe_depth"     type="bool"   value="true"/>
+	  <param name="subscribe_scan"      type="bool"   value="true"/>
+	  <param name="map_negative_poses_ignored" type="bool" value="true"/>
+	
+	  <!-- inputs -->
+	  <remap from="scan"            to="/scan"/>
+	  <remap from="rgb/image"       to="$(arg rgb_topic)"/>
+  	  <remap from="depth/image"     to="$(arg depth_topic)"/>
+  	  <remap from="rgb/camera_info" to="$(arg camera_info_topic)"/>
+  	  
+  	  <!-- output -->
+  	  <remap from="grid_map" to="/map"/>
+	
+	  <!-- RTAB-Map's parameters: do "rosrun rtabmap rtabmap (double-dash)params" to see the list of available parameters. -->
+	  <param name="RGBD/ProximityBySpace"        type="string" value="false"/>   <!-- Local loop closure detection (using estimated position) with locations in WM -->
+      <param name="RGBD/ProximityByTime"         type="string" value="false"/> 
+	  <param name="RGBD/OptimizeFromGraphEnd"    type="string" value="false"/>  <!-- Set to false to generate map correction between /map and /odom -->
+	  <param name="Kp/MaxDepth"                  type="string" value="4.0"/>
+	  <param name="Reg/Strategy"                 type="string" value="2"/>      <!-- Loop closure transformation refining with ICP: 0=Visual, 1=ICP, 2=Visual+ICP -->
+	  <param name="Icp/CoprrespondenceRatio"     type="string" value="0.3"/>
+	  <param name="Vis/MinInliers"               type="string" value="100"/>      <!-- 3D visual words minimum inliers to accept loop closure -->
+	  <param name="Vis/InlierDistance"           type="string" value="0.1"/>    <!-- 3D visual words correspondence distance -->
+	  <param name="RGBD/AngularUpdate"           type="string" value="0.1"/>    <!-- Update map only if the robot is moving -->
+	  <param name="RGBD/LinearUpdate"            type="string" value="0.1"/>    <!-- Update map only if the robot is moving -->
+	  <param name="Rtabmap/TimeThr"              type="string" value="700"/>
+	  <param name="Rtabmap/LoopThr"              type="string" value="0.9"/>
+	  <param name="Mem/RehearsalSimilarity"      type="string" value="0.9"/>
+	  <param name="Reg/Force3DoF"                type="string" value="true"/>
+	  
+	  <!-- localization mode -->
+	  <param     if="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="false"/>
+	  <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
+	  <param name="Mem/InitWMWithAllNodes" type="string" value="$(arg localization)"/> 
+    </node>
+   
+    <!-- Odometry : ONLY for testing without the actual robot! /odom TF should not be already published. -->
+    <node if="$(arg rgbd_odometry)" pkg="rtabmap_ros" type="rgbd_odometry" name="rgbd_odometry" output="screen">
+      <param name="frame_id"                    type="string" value="base_footprint"/>
+      <param name="wait_for_transform_duration" type="double" value="$(arg wait_for_transform)"/>
+      <param name="Reg/Force3DoF"               type="string" value="true"/>
+      <param name="Vis/InlierDistance"          type="string" value="0.05"/>
+      
+      <remap from="rgb/image"       to="$(arg rgb_topic)"/>
+      <remap from="depth/image"     to="$(arg depth_topic)"/>
+      <remap from="rgb/camera_info" to="$(arg camera_info_topic)"/>
+    </node>
+    
+    <!-- visualization with rtabmapviz -->
+    <node if="$(arg rtabmapviz)" pkg="rtabmap_ros" type="rtabmapviz" name="rtabmapviz" args="-d $(find rtabmap_ros)/launch/config/rgbd_gui.ini" output="screen">
+  	  <param name="subscribe_depth"             type="bool" value="true"/>
+      <param name="subscribe_scan"              type="bool" value="true"/>
+      <param name="frame_id"                    type="string" value="base_footprint"/>
+      <param name="wait_for_transform_duration" type="double" value="$(arg wait_for_transform)"/>
+    
+      <remap from="rgb/image"       to="$(arg rgb_topic)"/>
+      <remap from="depth/image"     to="$(arg depth_topic)"/>
+      <remap from="rgb/camera_info" to="$(arg camera_info_topic)"/>
+      <remap from="scan"            to="/scan"/>
+    </node>
+    
+
+
+  </group>
+
+<node pkg="nodelet" type="nodelet" name="obstacles_detection" args="standalone rtabmap_ros/obstacles_detection" output="screen">
+  <remap from="cloud" to="$(arg pointcloud_topic)"/>
+  <remap from="obstacles" to="$(arg obstacles_topic)"/>
+
+  <!-- <param name="wait_for_transform" type="bool" value="true"/> -->
+  <!-- <param name="wait_for_transform_duration" type="double" value="10.0" /> --> <!-- 10s -->
+  <param name="frame_id" type="string" value="$(arg robot_base_frame)"/>
+  <param name="map_frame_id" type="string" value="$(arg map_frame)"/>
+  <param name="Grid/MinClusterSize" type="int" value="100"/>
+  <param name="Grid/MaxObstacleHeight" type="double" value="0.23"/>
+  <param name="Grid/MinGroundHeight" type="double" value="0.02" />
+</node>
+
+
+<!-- <node pkg="tf" type="static_transform_publisher" name="base_link2camera_depth_optical_frame" args="0.123 0 0.18 0 0 0 base_link mynt_link 40" /> -->
+<node pkg="tf" type="static_transform_publisher" name="base_link2camera_depth_optical_frame" args="0 0 0 0 0 0 base_link mynt_link 40" />
+</launch>
+
