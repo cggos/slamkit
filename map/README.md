@@ -27,3 +27,8 @@
 # Topological Map
 
 # Semantic Map
+
+# Map Viewers
+
+* Octomap: `octovis octomap.bt`
+* PCD: `pcl_viewer map.pcd`
