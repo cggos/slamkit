@@ -22,17 +22,17 @@ namespace cg {
 
     public:
         TUMDataRGBD() : data_dir_("./") {
-            open_associate_file();
+            open_file();
             set_cam_k(0);
         }
 
         TUMDataRGBD(std::string data_dir, int ntype=0) : data_dir_(data_dir) {
-            open_associate_file();
+            open_file();
             set_cam_k(ntype);
         }
 
         ~TUMDataRGBD() {
-            close_associate_file();
+            close_file();
         }
 
     public:
@@ -43,12 +43,12 @@ namespace cg {
 
             std::cout << rgb_file << "\n" << depth_file << std::endl;
 
-            img_color = cv::imread(data_dir_ + "/" + rgb_file);
+            img_color = cv::imread(data_dir_ + "/" + rgb_file, CV_LOAD_IMAGE_COLOR);
             if(img_color.empty()) {
                 std::cerr << "imread img_color failed!" << std::endl;
                 return false;
             }
-            img_depth = cv::imread(data_dir_ + "/" + depth_file);
+            img_depth = cv::imread(data_dir_ + "/" + depth_file, CV_LOAD_IMAGE_UNCHANGED);
             if(img_depth.empty()) {
                 std::cerr << "imread img_depth failed!" << std::endl;
                 return false;
@@ -64,12 +64,12 @@ namespace cg {
 
             std::cout << rgb_file << "\n" << depth_file << std::endl;
 
-            img_color = cv::imread(data_dir_ + "/" + rgb_file);
+            img_color = cv::imread(data_dir_ + "/" + rgb_file, CV_LOAD_IMAGE_COLOR);
             if(img_color.empty()) {
                 std::cerr << "imread img_color failed!" << std::endl;
                 return false;
             }
-            img_depth = cv::imread(data_dir_ + "/" + depth_file);
+            img_depth = cv::imread(data_dir_ + "/" + depth_file, CV_LOAD_IMAGE_UNCHANGED);
             if(img_depth.empty()) {
                 std::cerr << "imread img_depth failed!" << std::endl;
                 return false;
@@ -87,6 +87,26 @@ namespace cg {
             return true;
         }
 
+        bool get_rgb(cv::Mat &img_color) {
+            std::string rgb_file, time_rgb;
+            file_rgb_ >> time_rgb >> rgb_file;
+            img_color = cv::imread(data_dir_ + "/" + rgb_file, CV_LOAD_IMAGE_COLOR);
+            if(img_color.empty()) {
+                std::cerr << "imread img_color failed!" << std::endl;
+                return false;
+            }
+        }
+
+        bool get_depth(cv::Mat &img_depth) {
+            std::string depth_file, time_depth;
+            file_depth_ >> time_depth >> depth_file;
+            img_depth = cv::imread(data_dir_ + "/" + depth_file, CV_LOAD_IMAGE_UNCHANGED);
+            if(img_depth.empty()) {
+                std::cerr << "imread img_depth failed!" << std::endl;
+                return false;
+            }
+        }
+
         bool getK(Eigen::Matrix3f &K) {
             K <<    cam_k_.fx, 0.f, cam_k_.cx,
                     0.f, cam_k_.fy, cam_k_.cy,
@@ -95,17 +115,41 @@ namespace cg {
         }
 
     private:
-        void open_associate_file() {
+        void open_file() {
             file_associate_.open(data_dir_ + "/" + "associate.txt");
             if (!file_associate_.is_open()) {
                 std::cerr << "open file failed!" << std::endl;
                 return;
             }
+            file_rgb_.open(data_dir_ + "/" + "rgb.txt");
+            if (!file_rgb_.is_open()) {
+                std::cerr << "open file failed!" << std::endl;
+                return;
+            }
+            std::string rgb_line;
+            std::getline(file_rgb_,rgb_line);
+            while(rgb_line.find('#')!=std::string::npos) {
+                std::getline(file_rgb_, rgb_line);
+            }
+            file_depth_.open(data_dir_ + "/" + "depth.txt");
+            if (!file_depth_.is_open()) {
+                std::cerr << "open file failed!" << std::endl;
+                return;
+            }
+            std::string depth_line;
+            std::getline(file_depth_,depth_line);
+            while(depth_line.find('#')!=std::string::npos) {
+                std::getline(file_depth_, depth_line);
+            }
         }
 
-        void close_associate_file() {
+        void close_file() {
             if (file_associate_.is_open())
                 file_associate_.close();
+            if (file_rgb_.is_open())
+                file_rgb_.close();
+            if (file_depth_.is_open())
+                file_depth_.close();
         }
 
         void set_cam_k(int ntype) {
@@ -132,6 +176,8 @@ namespace cg {
     private:
         std::string data_dir_;
         std::ifstream file_associate_;
+        std::ifstream file_rgb_;
+        std::ifstream file_depth_;
     };
 }
 
