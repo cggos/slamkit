@@ -95,6 +95,7 @@ namespace cg {
                 std::cerr << "imread img_color failed!" << std::endl;
                 return false;
             }
+            return true;
         }
 
         bool get_depth(cv::Mat &img_depth) {
@@ -105,6 +106,7 @@ namespace cg {
                 std::cerr << "imread img_depth failed!" << std::endl;
                 return false;
             }
+            return true;
         }
 
         bool getK(Eigen::Matrix3f &K) {
@@ -112,6 +114,13 @@ namespace cg {
                     0.f, cam_k_.fy, cam_k_.cy,
                     0.f, 0.f, 1.0f;
             return true;
+        }
+
+        bool getK(cv::Mat &K) {
+            K = (cv::Mat_<double> ( 3,3 ) <<
+                                         cam_k_.fx, 0.f, cam_k_.cx,
+                                         0.f, cam_k_.fy, cam_k_.cy,
+                                         0.f, 0.f, 1.0f);
         }
 
     private:
@@ -171,7 +180,7 @@ namespace cg {
 
     public:
         CamIntrinsic cam_k_;
-        const double depth_scale_ = 5000.0;
+        const float depth_scale_ = 5000.f;
 
     private:
         std::string data_dir_;
