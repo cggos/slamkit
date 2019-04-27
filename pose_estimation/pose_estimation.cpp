@@ -11,23 +11,24 @@ Point2d pixel2cam ( const Point2d& p, const Mat& K )
             );
 }
 
-void find_feature_matches ( const Mat& img_1, const Mat& img_2,
-                            std::vector<KeyPoint>& keypoints_1,
-                            std::vector<KeyPoint>& keypoints_2,
-                            std::vector< DMatch >& matches )
+void find_feature_matches (
+        const Mat& img_1, const Mat& img_2,
+        std::vector<KeyPoint>& keypoints_1,
+        std::vector<KeyPoint>& keypoints_2,
+        std::vector< DMatch >& matches )
 {
-    Ptr<FeatureDetector>     detector   = ORB::create();
-    Ptr<DescriptorExtractor> descriptor = ORB::create();
-    Ptr<DescriptorMatcher> matcher  = DescriptorMatcher::create ( "BruteForce-Hamming" );
 
-    detector->detect ( img_1,keypoints_1 );
-    detector->detect ( img_2,keypoints_2 );
+    Ptr<FeatureDetector> detector = ORB::create();
+    detector->detect ( img_1, keypoints_1 );
+    detector->detect ( img_2, keypoints_2 );
 
     Mat descriptors_1, descriptors_2;
+    Ptr<DescriptorExtractor> descriptor = ORB::create();
     descriptor->compute ( img_1, keypoints_1, descriptors_1 );
     descriptor->compute ( img_2, keypoints_2, descriptors_2 );
 
     std::vector<DMatch> match;
+    Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create ( "BruteForce-Hamming" );
     matcher->match ( descriptors_1, descriptors_2, match );
 
     double min_dist=10000, max_dist=0;
@@ -87,11 +88,53 @@ void triangulation (
     }
 }
 
-void pose_estimation_2d2d ( std::vector<KeyPoint> keypoints_1,
-                            std::vector<KeyPoint> keypoints_2,
-                            std::vector< DMatch > matches,
-                            const Mat& K,
-                            Mat& R, Mat& t )
+bool pose_estimation_direct(
+        const vector<Measurement>& measurements,
+        cv::Mat* gray,
+        Eigen::Matrix3f& K,
+        Eigen::Isometry3d& Tcw)
+{
+    // 初始化g2o
+    typedef g2o::BlockSolver<g2o::BlockSolverTraits<6,1>> DirectBlock;  // 求解的向量是6＊1的
+    DirectBlock::LinearSolverType* linearSolver = new g2o::LinearSolverDense< DirectBlock::PoseMatrixType > ();
+    DirectBlock* solver_ptr = new DirectBlock ( linearSolver );
+    // g2o::OptimizationAlgorithmGaussNewton* solver = new g2o::OptimizationAlgorithmGaussNewton( solver_ptr ); // G-N
+    g2o::OptimizationAlgorithmLevenberg* solver = new g2o::OptimizationAlgorithmLevenberg ( solver_ptr ); // L-M
+    g2o::SparseOptimizer optimizer;
+    optimizer.setAlgorithm ( solver );
+    optimizer.setVerbose( true );
+
+    g2o::VertexSE3Expmap* pose = new g2o::VertexSE3Expmap();
+    pose->setEstimate ( g2o::SE3Quat ( Tcw.rotation(), Tcw.translation() ) );
+    pose->setId ( 0 );
+    optimizer.addVertex ( pose );
+
+    // 添加边
+    int id=1;
+    for ( Measurement m: measurements )
+    {
+        EdgeSE3ProjectDirect* edge = new EdgeSE3ProjectDirect (
+                m.pos_world,
+                K ( 0,0 ), K ( 1,1 ), K ( 0,2 ), K ( 1,2 ), gray
+        );
+        edge->setVertex ( 0, pose );
+        edge->setMeasurement ( m.grayscale );
+        edge->setInformation ( Eigen::Matrix<double,1,1>::Identity() );
+        edge->setId ( id++ );
+        optimizer.addEdge ( edge );
+    }
+    cout<<"edges in graph: "<<optimizer.edges().size() <<endl;
+    optimizer.initializeOptimization();
+    optimizer.optimize ( 30 );
+    Tcw = pose->estimate();
+}
+
+void pose_estimation_2d2d (
+        std::vector<KeyPoint> keypoints_1,
+        std::vector<KeyPoint> keypoints_2,
+        std::vector< DMatch > matches,
+        const Mat& K,
+        Mat& R, Mat& t )
 {
     vector<Point2f> points1;
     vector<Point2f> points2;
@@ -121,19 +164,20 @@ void pose_estimation_2d2d ( std::vector<KeyPoint> keypoints_1,
 }
 
 void pose_estimation_3d3d (
-        const vector<Point3f>& pts1,
-        const vector<Point3f>& pts2,
-        Mat& R, Mat& t
-) {
-    Point3f p1, p2;     // center of mass
+        const std::vector<cv::Point3f> &pts1,
+        const std::vector<cv::Point3f> &pts2,
+        Eigen::Matrix3d& R, Eigen::Vector3d& t) {
+
+    cv::Point3f p1, p2;     // center of mass
     int N = pts1.size();
     for (int i = 0; i < N; i++) {
         p1 += pts1[i];
         p2 += pts2[i];
     }
-    p1 = Point3f(Vec3f(p1) / N);
-    p2 = Point3f(Vec3f(p2) / N);
-    vector<Point3f> q1(N), q2(N); // remove the center
+    p1 /= N;
+    p2 /= N;
+
+    std::vector<cv::Point3f> q1(N), q2(N); // remove the center
     for (int i = 0; i < N; i++) {
         q1[i] = pts1[i] - p1;
         q2[i] = pts2[i] - p2;
@@ -142,27 +186,25 @@ void pose_estimation_3d3d (
     // compute q1*q2^T
     Eigen::Matrix3d W = Eigen::Matrix3d::Zero();
     for (int i = 0; i < N; i++) {
-        W += Eigen::Vector3d(q1[i].x, q1[i].y, q1[i].z) * Eigen::Vector3d(q2[i].x, q2[i].y, q2[i].z).transpose();
+        Eigen::Vector3d v3q1 = Eigen::Vector3d(q1[i].x, q1[i].y, q1[i].z);
+        Eigen::Vector3d v3q2 = Eigen::Vector3d(q2[i].x, q2[i].y, q2[i].z);
+        W += v3q1 * v3q2.transpose();
     }
-    cout << "W=" << W << endl;
+    cout << "W=\n" << W << endl;
+
+    double determinantW = W(0,0)*W(1,1)*W(2,2) + W(0,1)*W(1,2)*W(2,0) + W(0,2)*W(1,0)*W(2,1) -
+                          (W(0,0)*W(1,2)*W(2,1) + W(0,1)*W(1,0)*W(2,2) + W(0,2)*W(1,1)*W(2,0));
+    assert(determinantW>1e-8);
 
     // SVD on W
     Eigen::JacobiSVD<Eigen::Matrix3d> svd(W, Eigen::ComputeFullU | Eigen::ComputeFullV);
     Eigen::Matrix3d U = svd.matrixU();
     Eigen::Matrix3d V = svd.matrixV();
-    cout << "U=" << U << endl;
-    cout << "V=" << V << endl;
+    cout << "U=\n" << U << endl;
+    cout << "V=\n" << V << endl;
 
-    Eigen::Matrix3d R_ = U * (V.transpose());
-    Eigen::Vector3d t_ = Eigen::Vector3d(p1.x, p1.y, p1.z) - R_ * Eigen::Vector3d(p2.x, p2.y, p2.z);
-
-    // convert to cv::Mat
-    R = (Mat_<double>(3, 3) <<
-                            R_(0, 0), R_(0, 1), R_(0, 2),
-            R_(1, 0), R_(1, 1), R_(1, 2),
-            R_(2, 0), R_(2, 1), R_(2, 2)
-    );
-    t = (Mat_<double>(3, 1) << t_(0, 0), t_(1, 0), t_(2, 0));
+    R = U * (V.transpose());
+    t = Eigen::Vector3d(p1.x, p1.y, p1.z) - R * Eigen::Vector3d(p2.x, p2.y, p2.z);
 }
 
 void bundle_adjustment_3d2d (
@@ -172,8 +214,8 @@ void bundle_adjustment_3d2d (
         Mat& R, Mat& t ) {
     typedef g2o::BlockSolver<g2o::BlockSolverTraits<6, 3> > Block;  // pose 维度为 6, landmark 维度为 3
 
-    Block::LinearSolverType *linearSolver = new g2o::LinearSolverCSparse<Block::PoseMatrixType>(); // 线性方程求解器
-    Block *solver_ptr = new Block(linearSolver);     // 矩阵块求解器
+    Block::LinearSolverType *linearSolver = new g2o::LinearSolverCSparse<Block::PoseMatrixType>();
+    Block *solver_ptr = new Block(linearSolver);
     g2o::OptimizationAlgorithmLevenberg *solver = new g2o::OptimizationAlgorithmLevenberg(solver_ptr);
 
     g2o::SparseOptimizer optimizer;
@@ -199,14 +241,13 @@ void bundle_adjustment_3d2d (
         g2o::VertexSBAPointXYZ *point = new g2o::VertexSBAPointXYZ();
         point->setId(index++);
         point->setEstimate(Eigen::Vector3d(p.x, p.y, p.z));
-        point->setMarginalized(true); // g2o 中必须设置 marg 参见第十讲内容
+        point->setMarginalized(true); // g2o 中必须设置 marg
         optimizer.addVertex(point);
     }
 
     // parameter: camera intrinsics
-    g2o::CameraParameters *camera = new g2o::CameraParameters(
-            K.at<double>(0, 0), Eigen::Vector2d(K.at<double>(0, 2), K.at<double>(1, 2)), 0
-    );
+    g2o::CameraParameters *camera =
+            new g2o::CameraParameters(K.at<double>(0, 0), Eigen::Vector2d(K.at<double>(0, 2), K.at<double>(1, 2)), 0);
     camera->setId(0);
     optimizer.addParameter(camera);
 

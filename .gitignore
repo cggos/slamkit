@@ -1,4 +1,5 @@
-tum_data_rgbd.h
+map/tum_data_rgbd.h
+pose_estimation/tum_data_rgbd.h
 build/
 cmake-build-debug/
 .idea/
