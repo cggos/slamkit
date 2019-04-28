@@ -136,29 +136,26 @@ void pose_estimation_2d2d (
         const Mat& K,
         Mat& R, Mat& t )
 {
-    vector<Point2f> points1;
-    vector<Point2f> points2;
-
+    vector<Point2f> pts1;
+    vector<Point2f> pts2;
     for ( int i = 0; i < ( int ) matches.size(); i++ ) {
-        points1.push_back(keypoints_1[matches[i].queryIdx].pt);
-        points2.push_back(keypoints_2[matches[i].trainIdx].pt);
+        pts1.push_back(keypoints_1[matches[i].queryIdx].pt);
+        pts2.push_back(keypoints_2[matches[i].trainIdx].pt);
     }
 
-    Mat fundamental_matrix;
-    fundamental_matrix = findFundamentalMat ( points1, points2, CV_FM_8POINT );
-    cout << "fundamental_matrix is " << endl << fundamental_matrix << endl;
+    Mat matF = findFundamentalMat(pts1, pts2, CV_FM_8POINT);
+    cout << "fundamental_matrix is " << endl << matF << endl;
 
-    Point2d principal_point ( K.at<double> ( 0,2 ), K.at<double> ( 1,2 ) );
-    double focal_length = K.at<double> ( 0,0 );
-    Mat essential_matrix;
-    essential_matrix = findEssentialMat ( points1, points2, focal_length, principal_point );
-    cout << "essential_matrix is " << endl << essential_matrix << endl;
+    double cx = K.at<double>(0,2);
+    double cy = K.at<double>(1,2);
+    double fx = K.at<double>(0,0);
+    Mat matE = findEssentialMat(pts1, pts2, fx, Point2d(cx,cy));
+    cout << "essential_matrix is " << endl << matE << endl;
 
-    Mat homography_matrix;
-    homography_matrix = findHomography ( points1, points2, RANSAC, 3 );
-    cout << "homography_matrix is " << endl << homography_matrix << endl;
+    Mat matH = findHomography(pts1, pts2, RANSAC, 3);
+    cout << "homography_matrix is " << endl << matH << endl;
 
-    recoverPose ( essential_matrix, points1, points2, R, t, focal_length, principal_point );
+    recoverPose(matE, pts1, pts2, R, t, fx, Point2d(cx,cy));
     cout << "R is " << endl << R << endl;
     cout << "t is " << endl << t << endl;
 }

@@ -3,15 +3,11 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 
+#include "tum_data_rgbd.h"
+
 using namespace std;
 using namespace cv;
 
-// this program shows how to use optical flow
-
-string file_1 = "../data/1.png";  // first image
-string file_2 = "../data/2.png";  // second image
-
-// TODO implement this funciton
 /**
  * single level optical flow
  * @param [in] img1 the first image
@@ -30,7 +26,6 @@ void OpticalFlowSingleLevel(
         bool inverse = false
 );
 
-// TODO implement this funciton
 /**
  * multi level optical flow, scale of pyramid is set to 2 by default
  * the image pyramid will be create inside the function
@@ -72,9 +67,24 @@ inline float GetPixelValue(const cv::Mat &img, float x, float y) {
 
 int main(int argc, char **argv) {
 
-    // images, note they are CV_8UC1, not CV_8UC3
-    Mat img1 = imread(file_1, 0);
-    Mat img2 = imread(file_2, 0);
+    Mat img1, img2;
+
+    cg::TUMDataRGBD tum_data_rgbd("/home/cg/dev_sdb/datasets/TUM/RGBD-SLAM-Dataset/rgbd_dataset_freiburg2_desk/", 1);
+    {
+        vector<cv::Mat> colorImgs;
+        const int count = 10;
+        for (int i = 0; i < count; ++i) {
+            cv::Mat img_color;
+            if (!tum_data_rgbd.get_rgb(img_color)) {
+                std::cerr << "get_rgb failed!" << std::endl;
+                return -1;
+            }
+            colorImgs.push_back(img_color);
+        }
+
+        cv::cvtColor(colorImgs[0], img1, COLOR_BGR2GRAY);
+        cv::cvtColor(colorImgs[3], img2, COLOR_BGR2GRAY);
+    }
 
     // key points, using GFTT here.
     vector<KeyPoint> kp1;
@@ -176,7 +186,6 @@ void OpticalFlowSingleLevel(
             for (int x = -half_patch_size; x < half_patch_size; x++)
                 for (int y = -half_patch_size; y < half_patch_size; y++) {
 
-                    // TODO START YOUR CODE HERE (~8 lines)
                     double error = 0;
                     Eigen::Vector2d J;  // Jacobian
 
@@ -199,15 +208,11 @@ void OpticalFlowSingleLevel(
                     H +=  J * J.transpose();
                     b += -J.transpose() * error;
                     cost += error * error;
-
-                    // TODO END YOUR CODE HERE
                 }
 
             // compute update
-            // TODO START YOUR CODE HERE (~1 lines)
             Eigen::Vector2d update;
             update = H.ldlt().solve(b);
-            // TODO END YOUR CODE HERE
 
             if (isnan(update[0])) {
                 // sometimes occurred when we have a black or white patch and H is irreversible
@@ -255,20 +260,15 @@ void OpticalFlowMultiLevel(
 
     // create pyramids
     vector<Mat> pyr1, pyr2; // image pyramids
-    // TODO START YOUR CODE HERE (~8 lines)
-    Mat tmp1;
-    Mat tmp2;
+    Mat tmp1, tmp2;
     for (int i = 0; i < pyramids; i++) {
         cv::resize(img1, tmp1, Size(img1.cols*scales[i], img1.rows*scales[i]));
         pyr1.push_back(tmp1);
         cv::resize(img2, tmp2, Size(img2.cols*scales[i], img2.rows*scales[i]));
         pyr2.push_back(tmp2);
     }
-    // TODO END YOUR CODE HERE
 
     // coarse-to-fine LK tracking in pyramids
-    // TODO START YOUR CODE HERE
-
     size_t size_kp1 = kp1.size();
     vector<KeyPoint> kp1_new;
     kp1_new.reserve(size_kp1);
@@ -277,16 +277,13 @@ void OpticalFlowMultiLevel(
         kp.pt *= scales[3];
         kp1_new.push_back(kp);
     }
-    for (int l=pyramids-1; l>=0; l--){
-        if(l < pyramids-1){
+    for (int l=pyramids-1; l>=0; l--) {
+        if(l < pyramids-1) {
             for (int i = 0; i < kp2.size(); i++) {
-                kp1_new[i].pt *= 2;
-                kp2[i].pt     *= 2;
+                kp1_new[i].pt /= pyramid_scale;
+                kp2[i].pt     /= pyramid_scale;
             }
         }
         OpticalFlowSingleLevel(pyr1[l], pyr2[l], kp1_new, kp2, success, inverse);
     }
-
-    // TODO END YOUR CODE HERE
-    // don't forget to set the results into kp2
 }
