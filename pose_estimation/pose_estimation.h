@@ -163,38 +163,33 @@ public:
 
     EdgeSE3ProjectDirect() {}
 
-    EdgeSE3ProjectDirect ( Eigen::Vector3d point, float fx, float fy, float cx, float cy, cv::Mat* image )
-            : x_world_ ( point ), fx_ ( fx ), fy_ ( fy ), cx_ ( cx ), cy_ ( cy ), image_ ( image )
-    {}
+    EdgeSE3ProjectDirect(Eigen::Vector3d point, float fx, float fy, float cx, float cy, cv::Mat* image)
+            : x_world_(point), fx_(fx), fy_(fy), cx_(cx), cy_(cy), image_(image) {}
 
-    virtual void computeError()
-    {
-        const g2o::VertexSE3Expmap* v  =static_cast<const g2o::VertexSE3Expmap*> ( _vertices[0] );
-        Eigen::Vector3d x_local = v->estimate().map ( x_world_ );
-        float x = x_local[0]*fx_/x_local[2] + cx_;
-        float y = x_local[1]*fy_/x_local[2] + cy_;
+    virtual void computeError() {
+        const g2o::VertexSE3Expmap *v = static_cast<const g2o::VertexSE3Expmap*>(_vertices[0]);
+        Eigen::Vector3d x_local = v->estimate().map(x_world_);
+        float x = x_local[0] * fx_ / x_local[2] + cx_;
+        float y = x_local[1] * fy_ / x_local[2] + cy_;
         // check x,y is in the image
-        if ( x-4<0 || ( x+4 ) >image_->cols || ( y-4 ) <0 || ( y+4 ) >image_->rows )
-        {
-            _error ( 0,0 ) = 0.0;
-            this->setLevel ( 1 );
-        }
-        else
-        {
-            _error ( 0,0 ) = getPixelValue ( x,y ) - _measurement;
+        if (x - 4 < 0 || (x + 4) > image_->cols || (y - 4) < 0 || (y + 4) > image_->rows) {
+            _error(0, 0) = 0.0;
+            this->setLevel(1);
+        } else {
+            _error(0, 0) = getPixelValue(x, y) - _measurement;
         }
     }
 
     // plus in manifold
     virtual void linearizeOplus( )
     {
-        if ( level() == 1 )
-        {
+        if(level() == 1) {
             _jacobianOplusXi = Eigen::Matrix<double, 1, 6>::Zero();
             return;
         }
-        g2o::VertexSE3Expmap* vtx = static_cast<g2o::VertexSE3Expmap*> ( _vertices[0] );
-        Eigen::Vector3d xyz_trans = vtx->estimate().map ( x_world_ );   // q in book
+
+        g2o::VertexSE3Expmap* vtx = static_cast<g2o::VertexSE3Expmap*>(_vertices[0]);
+        Eigen::Vector3d xyz_trans = vtx->estimate().map(x_world_);   // q in book
 
         double x = xyz_trans[0];
         double y = xyz_trans[1];
@@ -231,21 +226,20 @@ public:
     }
 
     // dummy read and write functions because we don't care...
-    virtual bool read ( std::istream& in ) {}
-    virtual bool write ( std::ostream& out ) const {}
+    virtual bool read(std::istream& in) {}
+    virtual bool write(std::ostream& out) const {}
 
 protected:
     // get a gray scale value from reference image (bilinear interpolated)
-    inline float getPixelValue ( float x, float y )
-    {
-        uchar* data = & image_->data[ int ( y ) * image_->step + int ( x ) ];
-        float xx = x - floor ( x );
-        float yy = y - floor ( y );
-        return float (
-                ( 1-xx ) * ( 1-yy ) * data[0] +
-                xx* ( 1-yy ) * data[1] +
-                ( 1-xx ) *yy*data[ image_->step ] +
-                xx*yy*data[image_->step+1]
+    inline float getPixelValue(float x, float y) {
+        uchar *data = &image_->data[int(y) * image_->step + int(x)];
+        float xx = x - floor(x);
+        float yy = y - floor(y);
+        return float(
+                (1 - xx) * (1 - yy) * data[0] +
+                xx * (1 - yy) * data[1] +
+                (1 - xx) * yy * data[image_->step] +
+                xx * yy * data[image_->step + 1]
         );
     }
 public:
