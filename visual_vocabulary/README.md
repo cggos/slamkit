@@ -28,5 +28,6 @@
 
 * ORBvoc.txt.tar.gz
   ```sh
-  wget https://github.com/raulmur/ORB_SLAM2/blob/master/Vocabulary/ORBvoc.txt.tar.gz
+  # location: https://github.com/raulmur/ORB_SLAM2/blob/master/Vocabulary/
+  wget https://raw.githubusercontent.com/raulmur/ORB_SLAM2/master/Vocabulary/ORBvoc.txt.tar.gz
   ```
