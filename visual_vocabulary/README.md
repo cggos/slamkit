@@ -1,20 +1,27 @@
 # Visual Vocabulary
 
+* [Simple bag-of-words loop closure for visual SLAM](https://nicolovaligi.com/bag-of-words-loop-closure-visual-slam.html)
+
 -----
 
-* [Simple bag-of-words loop closure for visual SLAM](https://nicolovaligi.com/bag-of-words-loop-closure-visual-slam.html)
+[TOC]
 
 ## DBoW
 
-* [DBoW](https://github.com/dorian3d/DBow): an open source C++ library for indexing and converting images into a bag-of-word representation (Note: out of date)
-* [DBoW2](https://github.com/dorian3d/DBoW2): an improved version of the DBow library
-* [DBoW3](https://github.com/rmsalinas/DBow3): an improved version of the DBow2 library
+* [dorian3d/DBoW](https://github.com/dorian3d/DBow): an open source C++ library for indexing and converting images into a bag-of-word representation (Note: out of date)
+* [dorian3d/DBoW2](https://github.com/dorian3d/DBoW2): an improved version of the DBow library
+* [rmsalinas/DBow3](https://github.com/rmsalinas/DBow3): an improved version of the DBow2 library
   ```bash
   git clone https://github.com/rmsalinas/DBow3.git
   cd DBow3
   mkdir build & cd build
   cmake .. & make
   ```
+
+## DLoopDetector
+
+* [dorian3d/DLoopDetector](https://github.com/dorian3d/DLoopDetector) is an open source C++ library to detect loops in a sequence of images collected by a mobile robot
+
 ## FBOW
 
 * [rmsalinas/fbow](https://github.com/rmsalinas/fbow): FBOW (Fast Bag of Words) is an extremmely optimized version of the DBow2/DBow3 libraries.
