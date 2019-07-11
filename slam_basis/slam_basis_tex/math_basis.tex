@@ -1,0 +1,133 @@
+\chapter{数学基础}
+
+\section{Matrix}
+
+\subsection{Special Matrices}
+\begin{enumerate}
+\item Jacobian Matrix
+\item Hessian Matrix
+\item Covariance Matrix
+\end{enumerate}
+
+\subsection{Matrix Decomposition}
+
+\subsubsection{EVD} 
+
+\subsubsection{SVD} 
+
+\subsubsection{QR} 
+a decomposition of a matrix A into a product A = QR of an orthogonal matrix Q and an upper triangular matrix R.  \\
+
+QR decomposition is often used to solve the linear least squares problem, and is the basis for a particular eigenvalue algorithm. \\
+
+Any real square matrix A may be decomposed as A = QR, where Q is an orthogonal matrix (its columns are orthogonal unit vectors meaning QTQ = I) and R is an upper triangular matrix (also called right triangular matrix).  If A is invertible, then the factorization is unique if we require the diagonal elements of R to be positive. \\
+
+If instead A is a complex square matrix, then there is a decomposition A = QR where Q is a unitary matrix (so Q*Q = I).
+
+\subsubsection{LU} 
+
+\subsubsection{Cholesky} 
+a decomposition of a Hermitian, positive-definite matrix into the product of a lower triangular matrix and its conjugate transpose, which is useful for efficient numerical solutions, e.g. Monte Carlo simulations. It was discovered by André-Louis Cholesky for real matrices. When it is applicable, the Cholesky decomposition is roughly twice as efficient as the LU decomposition for solving systems of linear equations.  \\
+
+The Cholesky decomposition of a Hermitian positive-definite matrix A is a decomposition of the form
+\begin{equation}
+A = LL^{*}
+\end{equation}
+where L is a lower triangular matrix with real and positive diagonal entries, and L* denotes the conjugate transpose of L. Every Hermitian positive-definite matrix (and thus also every real-valued symmetric positive-definite matrix) has a unique Cholesky decomposition. \\
+
+If the matrix A is Hermitian and positive semi-definite, then it still has a decomposition of the form A = LL* if the diagonal entries of L are allowed to be zero. \\
+
+When A has real entries, L has real entries as well, and the factorization may be written A = LLT. \\
+
+The Cholesky decomposition is unique when A is positive definite; there is only one lower triangular matrix L with strictly positive diagonal entries such that A = LL*. However, the decomposition need not be unique when A is positive semidefinite. \\
+
+The converse holds trivially: if A can be written as LL* for some invertible L, lower triangular or otherwise, then A is Hermitian and positive definite.
+
+\subsubsection{Summary}
+\begin{enumerate}
+\item 在实际应用中，因为数值稳定性的要求 ，dense matrix 往往用QR求解 ，对于 大型的稀疏矩阵则多用Cholesky分解
+\end{enumerate}
+
+
+\section{李群和李代数}
+
+\subsection{特殊正交群}
+\begin{equation}
+SO(n) = \{ R \in \mathbb{R}^{n \times n} | RR^\top = I, det(R) = 1\}
+\end{equation}
+
+\begin{equation} R = exp({\xi}^{\wedge}) \end{equation}
+\begin{equation} \xi = ln(R)^{\vee} \end{equation}
+
+注：${\xi}^{\wedge}$为$\xi$的反对称矩阵
+
+\subsection{特殊欧式群}
+\begin{equation}
+SE(3) = \{ T = \begin{bmatrix} R & t \\ 0^\top & 1 \end{bmatrix} \in \mathbb{R}^{4 \times 4} | R \in SO(3), t \in \mathbb{R}^{3}\}
+\end{equation}
+
+
+\section{欧式变换}
+Translate by -C(align origins), Rotate to align axes:
+\begin{equation} P_c = R (P_w - C) = RP_w - RC = RP_w + t \end{equation}
+
+\subsection{旋转的表示}
+
+\subsubsection{旋转矩阵} 
+\begin{equation}
+R =  \begin{bmatrix} r_{11} &  r_{12} & r_{13} \\  r_{21} & r_{22} & r_{23} \\ r_{31} & r_{32} & r_{33} \end{bmatrix} 
+\end{equation}
+
+\subsubsection{旋转向量} 
+\begin{equation} \xi = ln(R)^{\vee} \end{equation}
+\begin{enumerate}
+\item 旋转轴：\begin{equation} \frac{\xi}{||\xi||}  \end{equation}
+\item 旋转角：\begin{equation} ||\xi||  \end{equation}
+\end{enumerate}
+
+\subsubsection{四元数} 
+2D旋转：单位复数可用来表示2D旋转。  \\
+\begin{equation} 
+z = a + b\vec{i} = r ( cos\theta + sin\theta\vec{i} ) = e^{\theta \vec{i}}, r = |z| = 1
+\end{equation}
+3D旋转：单位四元数才可表示3D旋转，四元数是复数的扩充，在表示旋转前需要进行归一化。 \\
+\begin{equation} 
+Quarternion = q_0 + q_1\vec{i} + q_2\vec{j} + q_3\vec{k}  
+\end{equation} 
+四元数可以在保证效率的同时，减小矩阵1/4的内存占有量，同时又能避免欧拉角的万向锁问题。
+
+\subsubsection{欧拉角} 
+
+
+\subsection{平移}
+
+\subsection{缩放}
+
+
+
+\section{对极几何}
+
+\subsection{Essential Matrix}
+\begin{equation} E = t \wedge R \end{equation}
+\begin{equation} {x_2}^\top \cdot E \cdot x_1 = 0 \end{equation}
+ 
+\subsection{Foundamental Matrix}
+\begin{equation} F = K^{-\top} E K^{-1} \end{equation}
+
+\subsection{Homography Matrix}
+\begin{equation} x_2 = H \cdot x_1 \end{equation}
+
+
+\section{Probability Theory and Statistics}
+\subsection{MLE(Maximum Likelihood Estimate)}
+\subsection{OLS(Ordinary Least Squares)}
+\subsection{RANSAC(RANdom SAmple Consensus)}
+\subsection{M-Estimator}
+
+\section{优化理论}
+\subsection{Gauss-Newton}
+\subsection{Levenberg-Marquardt}
+\subsection{ESM}
+\subsection{Bundle Adjustment}
+\subsection{图优化}
+g2o

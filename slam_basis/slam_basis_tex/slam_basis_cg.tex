@@ -1,0 +1,40 @@
+\documentclass[10pt,a4paper,titlepage]{book}
+
+\usepackage{xeCJK}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{makeidx}
+
+\usepackage{lipsum}
+\usepackage{marginnote}
+\usepackage[top=1.5cm, bottom=1.5cm, outer=2cm, inner=2cm, heightrounded, marginparwidth=0cm, marginparsep=2cm]{geometry}
+%\usepackage{showframe}
+
+\makeindex
+
+\title{Study Notes for SLAM}
+\author{GaoHongchen(Gordon Scott)}
+
+\setlength{\marginparpush}{0pt}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+\tableofcontents
+
+\mainmatter
+\include{overview}
+\include{math_basis}
+\include{image_process}
+\include{sensors}
+\include{Odometry}
+\include{Backend}
+\include{ComparedWithSFM}
+\include{ApplicationFields}
+\appendix
+
+\backmatter
+
+\end{document}

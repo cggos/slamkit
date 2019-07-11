@@ -1,0 +1,89 @@
+\chapter{传感器}
+
+\section{视觉传感器}
+
+结合惯性测量器件（Inertial Measurement Unit，IMU）的视觉SLAM也是现在研究热点之一。
+
+\subsection{Monocular Camera}
+
+\begin{enumerate}
+
+\item 概述
+\begin{enumerate}
+\item 最大的问题，就是没法确切地得到深度
+\item 单目SLAM只能估计一个相对深度，在相似变换空间Sim(3)中求解，而非传统的欧氏空间SE(3)。如果我们必须要在SE(3)中求解，则需要用一些外部的手段，例如GPS、IMU等传感器，确定轨迹与地图的尺度（Scale）
+\item 无法确定深度同时也有一个好处：它使得单目SLAM不受环境大小的影响，因此既可以用于室内，又可以用于室外
+\end{enumerate}
+
+\item Parameters
+\begin{itemize}
+\item $f_x,f_y$ : focal legth
+\item $c_x,c_y$ : principal point
+\item $\omega$ : radial distortion, the **FOV-model**
+\end{itemize}
+
+\item Project
+\begin{equation} r = \sqrt{{x_c}^2+{y_c}^2} \end{equation}
+\begin{equation} r'= \frac{1}{\omega}arctan(2r tan(\frac{\omega}{2})) \end{equation}
+\begin{equation}
+\left[\begin{array}{c}u\\v\end{array}\right] =  
+\left[\begin{array}{c}c_x\\c_y\end{array}\right] +
+\left[\begin{array}{cc}f_x&0\\0&f_y\end{array}\right]  
+\frac{r'}{r}
+\left[\begin{array}{c}x_c\\y_c\end{array}\right]
+\end{equation}
+
+\item UnProject
+\begin{equation}
+\left[\begin{array}{c}{x_c}'\\{y_c}'\end{array}\right] =
+\left[\begin{array}{cc}f_x&0\\0&f_y\end{array}\right]^{-1}
+\Biggl(
+\left[\begin{array}{c}u\\v\end{array}\right] -  
+\left[\begin{array}{c}c_x\\c_y\end{array}\right]
+\Biggr)
+\end{equation}
+\begin{equation} r' = \sqrt{ {{x_c}'}^2+{{y_c}'}^2 } \end{equation}
+\begin{equation} r = \frac{tan(\omega r')}{2tan\frac{\omega}{2}} \end{equation}
+\begin{equation}
+\left[\begin{array}{c}x_c\\y_c\end{array}\right] =
+\frac{r}{r'}
+\left[\begin{array}{c}{x_c}'\\{y_c}'\end{array}\right]
+\end{equation}
+
+\item Derivative of Projection
+the derivative of image frame wrt camera z=1 frame at the last computed projection: \newline
+\begin{equation}
+J_{projection} =
+\left[\begin{array}{cc}\frac{\partial{u}}{\partial{x_c}}&\frac{\partial{u}}{\partial{y_c}}\\\frac{\partial{v}}{\partial{x_c}}&\frac{\partial{v}}{\partial{y_c}}\end{array}\right]  
+\end{equation}
+
+\end{enumerate}
+
+\subsection{双目或多目}
+\begin{enumerate}
+\item 一般使用双目视觉或者三目视觉方法进行测距
+\item 通过双目图像计算像素距离，是一件非常消耗计算量的事情，现在多用FPGA来完成
+\item 双目相机通过多个相机之间的基线，估计空间点的位置
+\end{enumerate}
+
+\subsection{RGBD}
+\begin{enumerate}
+\item RGBD相机是2010年左右开始兴起的一种相机，它最大的特点是可以通过红外结构光或Time-of-Flight原理，直接测出图像中各像素离相机的距离
+\item 目前常用的RGBD相机包括Kinect/Kinect V2、Xtion等
+\item 出于量程的限制，主要用于室内SLAM
+\end{enumerate}
+
+\section{激光}
+\begin{enumerate}
+\item 激光测距单元不能够应用于水下测量
+\item 优点是精度很高，速度快，计算量也不大，容易做成实时SLAM
+\end{enumerate}
+
+
+
+
+\section{超声波}
+\begin{enumerate}
+\item 在水下，由于其穿透力较强
+\item 最为常用的超声波测距单元是Polaroid超声波发生器
+\end{enumerate}

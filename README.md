@@ -5,8 +5,6 @@
 
 -----
 
-[TOC]
-
 # SLAM Theoretical Basis
 
 # Open Source SLAM Frameworks

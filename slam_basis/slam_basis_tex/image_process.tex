@@ -1,0 +1,69 @@
+\chapter{数字图像处理}
+
+\section{颜色空间转换}
+1. RGB to Gray (CV\_BGR2GRAY) :
+\begin{equation} Y = 0.299*R + 0.587*G + 0.114*B \end{equation}
+
+\section{图像金字塔}
+\begin{itemize}
+\item 均值金字塔：2*2邻域均值滤波
+\item 高斯金字塔：向下降采样图像(4层)，高斯核5*5
+\item 拉普拉斯金字塔
+\end{itemize}
+
+\section{FAST Algorithm for Corner Detection}
+
+\href{https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_fast/py_fast.html}{FAST Algorithm for Corner Detection}
+
+\subsection{Features from Accelerated Segment Test}
+检测**局部像素灰度**变化明显的地方。
+\begin{enumerate}   
+\item 在图像中选取像素p，假设它的亮度为Ip；
+\item 设置一个阈值Ｔ；
+\item 以像素p为中心，选取半径为3的圆上的16个像素；
+\item 假设选取的圆上有连续的Ｎ个点的亮度大于Ip+T或Ip-T，则该点ｐ可被认为是特征点（Ｎ通常取12，即为FAST-12，其他常用的Ｎ取值有9和11，分别被成为FAST-9和FAST-11）；
+\item 循环以上四步；
+\end{enumerate}
+
+%\write18{wget https://docs.opencv.org/3.0-beta/_images/fast_speedtest.jpg}
+%\includegraphics{fast_speedtest.jpg}
+
+\subsection{Non-maximal Suppression}
+FAST角点经常出现“扎堆”的情况，通过非极大值抑制，在一定区域内仅保留响应极大值的角点，避免角点集中的问题。
+
+
+\section{Shi-Tomas}
+\begin{itemize}
+\item \href{https://docs.opencv.org/2.4/doc/tutorials/features2d/trackingmotion/harris_detector/harris_detector.html}{Harris corner detector}
+\item \href{https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_shi_tomasi/py_shi_tomasi.html}{Shi-Tomasi Corner Detector \& Good Features to Track}
+\end{itemize}
+计算方法：\newline
+\begin{enumerate}  
+\item 根据Harris角点检测方法，构建梯度协方差矩阵M
+\begin{equation}
+M =  
+\left[\begin{array}{cc}
+{I_x}^2&I_xI_y\\I_xI_y&{I_y}^2
+\end{array}\right]  
+\end{equation}
+\item 求矩阵M的特征值
+\begin{equation} det(\lambda E - M) = 0 \end{equation}
+\item Shi-Tomas分数即为最小特征值
+\begin{equation} R=min(\lambda_1,\lambda_2) \end{equation}
+\end{enumerate}
+
+
+\section{SSD}
+Sum of Squared Distance: \newline
+\begin{equation} {D(I_A,I_B)}_{SSD} = \sum_{x,y}[{I_A}_{(x,y)}-{I_B}_{(x,y)}]^2  \end{equation}
+
+
+\section{块匹配}
+\begin{enumerate}  
+\item 假设图像I1和图像I2，分别对应的角点为p1i和p2j，在图像I2角点中找到与图像I1对应的角点；
+\item 以角点p1i为中心，在图像I1中提取9*9的像素块作为模板图像T1i；
+\item 在图像I2中p1i点周围(以角点p1i为中心20*20的像素 范围)查找所有的角点p2jm(m<=n,n为该范围内角点数)；
+\item 遍历所有的角点p2jm，以角点p2jm为中心，在图像I2中提取9*9的像素块，计算该像素块与T1i的SSD；
+\item SSD最小对应的角点p2jm，即为图像I2中与图像I1中角点p1i对应的匹配角点；
+\item 循环执行以上5步，查找图像I2中与图像I1对应的所有匹配角点；
+\end{enumerate}
