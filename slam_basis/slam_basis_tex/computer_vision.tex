@@ -1,4 +1,4 @@
-\chapter{数字图像处理}
+\chapter{计算机视觉}
 
 \section{颜色空间转换}
 1. RGB to Gray (CV\_BGR2GRAY) :
@@ -67,3 +67,16 @@ Sum of Squared Distance: \newline
 \item SSD最小对应的角点p2jm，即为图像I2中与图像I1中角点p1i对应的匹配角点；
 \item 循环执行以上5步，查找图像I2中与图像I1对应的所有匹配角点；
 \end{enumerate}
+
+
+\section{对极几何}
+
+\subsection{Essential Matrix}
+\begin{equation} E = t \wedge R \end{equation}
+\begin{equation} {x_2}^\top \cdot E \cdot x_1 = 0 \end{equation}
+ 
+\subsection{Foundamental Matrix}
+\begin{equation} F = K^{-\top} E K^{-1} \end{equation}
+
+\subsection{Homography Matrix}
+\begin{equation} x_2 = H \cdot x_1 \end{equation}

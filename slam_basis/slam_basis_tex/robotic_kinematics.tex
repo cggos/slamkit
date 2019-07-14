@@ -1,0 +1,55 @@
+\chapter{机器人运动学}
+
+\section{李群和李代数}~\citep{Gao2017SLAM}
+
+\subsection{特殊正交群}
+\begin{equation}
+SO(n) = \{ R \in \mathbb{R}^{n \times n} | RR^\top = I, det(R) = 1\}
+\end{equation}
+
+\begin{equation} R = exp({\xi}^{\wedge}) \end{equation}
+\begin{equation} \xi = ln(R)^{\vee} \end{equation}
+
+注：${\xi}^{\wedge}$为$\xi$的反对称矩阵
+
+\subsection{特殊欧式群}
+\begin{equation}
+SE(3) = \{ T = \begin{bmatrix} R & t \\ 0^\top & 1 \end{bmatrix} \in \mathbb{R}^{4 \times 4} | R \in SO(3), t \in \mathbb{R}^{3}\}
+\end{equation}
+
+
+\section{欧式变换}
+Translate by -C(align origins), Rotate to align axes:
+\begin{equation} P_c = R (P_w - C) = RP_w - RC = RP_w + t \end{equation}
+
+\subsection{旋转的表示}
+
+\subsubsection{旋转矩阵} 
+\begin{equation}
+R =  \begin{bmatrix} r_{11} &  r_{12} & r_{13} \\  r_{21} & r_{22} & r_{23} \\ r_{31} & r_{32} & r_{33} \end{bmatrix} 
+\end{equation}
+
+\subsubsection{旋转向量} 
+\begin{equation} \xi = ln(R)^{\vee} \end{equation}
+\begin{enumerate}
+\item 旋转轴：\begin{equation} \frac{\xi}{||\xi||}  \end{equation}
+\item 旋转角：\begin{equation} ||\xi||  \end{equation}
+\end{enumerate}
+
+\subsubsection{四元数} 
+2D旋转：单位复数可用来表示2D旋转。  \\
+\begin{equation} 
+z = a + b\vec{i} = r ( cos\theta + sin\theta\vec{i} ) = e^{\theta \vec{i}}, r = |z| = 1
+\end{equation}
+3D旋转：单位四元数才可表示3D旋转，四元数是复数的扩充，在表示旋转前需要进行归一化。 \\
+\begin{equation} 
+Quarternion = q_0 + q_1\vec{i} + q_2\vec{j} + q_3\vec{k}  
+\end{equation} 
+四元数可以在保证效率的同时，减小矩阵1/4的内存占有量，同时又能避免欧拉角的万向锁问题。
+
+\subsubsection{欧拉角} 
+
+
+\subsection{平移}
+
+\subsection{缩放}
