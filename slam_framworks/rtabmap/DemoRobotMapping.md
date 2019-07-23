@@ -8,7 +8,7 @@
 
 * Command
 
-```
+```sh
 roslaunch rtabmap_ros demo_robot_mapping.launch rtabmapviz:=false rviz:=true
 ```
 
@@ -22,7 +22,7 @@ roslaunch rtabmap_ros demo_robot_mapping.launch rtabmapviz:=false rviz:=true
 
 * 流程图
 
-```dot
+```graphviz
 digraph g {
     rankdir = LR;
 
@@ -90,8 +90,10 @@ digraph g {
 ```
 
 ### /points_xyzrgb
+
 * 流程图
-```dot
+
+```graphviz
 digraph g{
     rankdir = LR;
     rviz -> points_xyzrgb [label="launch nodelet"];
