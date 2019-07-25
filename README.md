@@ -5,15 +5,15 @@
 
 -----
 
-# SLAM Theoretical Basis
+# 1. SLAM Theoretical Basis
 
-# Open Source SLAM Frameworks
+# 2. SLAM Frameworks
 
-# Loop Closure
+# 3. Loop Closure
 
-# SLAM Dataset
+# 4. SLAM Dataset
 
-# SLAM Modules DIY
+# 5. SLAM Modules DIY
 
 * [ROS CAMERA AND IMU SYNCHRONIZATION](http://grauonline.de/wordpress/?page_id=1951)
 
