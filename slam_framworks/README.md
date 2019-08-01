@@ -63,7 +63,7 @@
 
 * MSCKF
   - [daniilidis-group/msckf_mono](https://github.com/daniilidis-group/msckf_mono): Monocular MSCKF with ROS Support
-  - [KumarRobotics/msckf_vio](https://github.com/KumarRobotics/msckf_vio): Robust Stereo Visual Inertial Odometry for Fast Autonomous Flight
+  - [cggos/msckf_vio_cg](https://github.com/cggos/msckf_vio_cg)
 
 * [cggos/rovio_cg](https://github.com/cggos/rovio_cg): Robust Visual Inertial Odometry
 
