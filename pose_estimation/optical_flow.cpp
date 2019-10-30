@@ -37,12 +37,12 @@ void OpticalFlowSingleLevel(
  * @param [in] inverse set true to enable inverse formulation
  */
 void OpticalFlowMultiLevel(
-        const Mat &img1,
-        const Mat &img2,
+        const vector<Mat> &pyr1,
+        const vector<Mat> &pyr2,
         const vector<KeyPoint> &kp1,
         vector<KeyPoint> &kp2,
         vector<bool> &success,
-        bool inverse = false
+        bool inverse = true
 );
 
 /**
@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
 
     Mat img1, img2;
 
-    cg::TUMDataRGBD tum_data_rgbd("/home/cg/dev_sdb/datasets/TUM/RGBD-SLAM-Dataset/rgbd_dataset_freiburg2_desk/", 1);
+    cg::TUMDataRGBD tum_data_rgbd("/home/cg/projects/datasets/rgbd_dataset_freiburg1_xyz/", 1);
     {
         vector<cv::Mat> colorImgs;
         const int count = 10;
@@ -98,13 +98,26 @@ int main(int argc, char **argv) {
     OpticalFlowSingleLevel(img1, img2, kp1, kp2_single, success_single);
 
     // then test multi-level LK
+    // create pyramids
+    double scale = 1.0;
+    vector<Mat> pyr1, pyr2; // image pyramids
+    Mat tmp1, tmp2;
+    for (int i = 0; i < 4; i++) {
+        cv::resize(img1, tmp1, Size(img1.cols*scale, img1.rows*scale));
+        pyr1.push_back(tmp1);
+        cv::resize(img2, tmp2, Size(img2.cols*scale, img2.rows*scale));
+        pyr2.push_back(tmp2);
+        scale *= 0.5;
+    }
+
     vector<KeyPoint> kp2_multi;
     vector<bool> success_multi;
-    OpticalFlowMultiLevel(img1, img2, kp1, kp2_multi, success_multi);
+    OpticalFlowMultiLevel(pyr1, pyr2, kp1, kp2_multi, success_multi);
 
     // use opencv's flow for validation
     vector<Point2f> pt1, pt2;
-    for (auto &kp: kp1) pt1.push_back(kp.pt);
+    for (auto &kp: kp1)
+        pt1.push_back(kp.pt);
     vector<uchar> status;
     vector<float> error;
     cv::calcOpticalFlowPyrLK(img1, img2, pt1, pt2, status, error, cv::Size(8, 8));
@@ -153,10 +166,9 @@ void OpticalFlowSingleLevel(
         vector<bool> &success,
         bool inverse
 ) {
-
     // parameters
-    int half_patch_size = 4;
-    int iterations = 10;
+    int half_patch_size = 5;
+    int iterations = 20;
     bool have_initial = !kp2.empty();
 
     for (size_t i = 0; i < kp1.size(); i++) {
@@ -246,44 +258,34 @@ void OpticalFlowSingleLevel(
 }
 
 void OpticalFlowMultiLevel(
-        const Mat &img1,
-        const Mat &img2,
+        const vector<Mat> &pyr1,
+        const vector<Mat> &pyr2,
         const vector<KeyPoint> &kp1,
         vector<KeyPoint> &kp2,
         vector<bool> &success,
         bool inverse) {
 
     // parameters
-    int pyramids = 4;
-    double pyramid_scale = 0.5;
-    double scales[] = {1.0, 0.5, 0.25, 0.125};
+    int pyramids = pyr1.size();
 
-    // create pyramids
-    vector<Mat> pyr1, pyr2; // image pyramids
-    Mat tmp1, tmp2;
-    for (int i = 0; i < pyramids; i++) {
-        cv::resize(img1, tmp1, Size(img1.cols*scales[i], img1.rows*scales[i]));
-        pyr1.push_back(tmp1);
-        cv::resize(img2, tmp2, Size(img2.cols*scales[i], img2.rows*scales[i]));
-        pyr2.push_back(tmp2);
-    }
+    double pyramid_scale = pyr1[1].cols / (double)pyr1[0].cols;
 
     // coarse-to-fine LK tracking in pyramids
     size_t size_kp1 = kp1.size();
-    vector<KeyPoint> kp1_new;
-    kp1_new.reserve(size_kp1);
+    vector<KeyPoint> kp1_top;
+    kp1_top.reserve(size_kp1);
     for (int i = 0; i<size_kp1; i++) {
         KeyPoint kp = kp1[i];
-        kp.pt *= scales[3];
-        kp1_new.push_back(kp);
+        kp.pt *= std::pow(pyramid_scale, pyramids-1);
+        kp1_top.push_back(kp);
     }
     for (int l=pyramids-1; l>=0; l--) {
         if(l < pyramids-1) {
             for (int i = 0; i < kp2.size(); i++) {
-                kp1_new[i].pt /= pyramid_scale;
+                kp1_top[i].pt /= pyramid_scale;
                 kp2[i].pt     /= pyramid_scale;
             }
         }
-        OpticalFlowSingleLevel(pyr1[l], pyr2[l], kp1_new, kp2, success, inverse);
+        OpticalFlowSingleLevel(pyr1[l], pyr2[l], kp1_top, kp2, success, inverse);
     }
 }
