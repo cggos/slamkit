@@ -2,6 +2,7 @@
 #include <string>
 #include <Eigen/Core>
 #include <Eigen/Dense>
+#include <fstream>
 
 #include "tum_data_rgbd.h"
 
@@ -23,6 +24,8 @@ void OpticalFlowSingleLevel(
         const vector <cv::Point2f> &kpt1,
         vector <cv::Point2f> &kpt2,
         vector<unsigned char> &success,
+        int path_size = 7,
+        int max_iters = 10,
         bool inverse = false
 );
 
@@ -42,6 +45,8 @@ void OpticalFlowMultiLevel(
         const vector <cv::Point2f> &kpt1,
         vector <cv::Point2f> &kpt2,
         vector<unsigned char> &success,
+        int path_size = 7,
+        int max_iters = 10,
         bool inverse = true
 );
 
@@ -66,6 +71,8 @@ inline float GetPixelValue(const cv::Mat &img, float x, float y) {
 
 
 int main(int argc, char **argv) {
+
+    std::ofstream out_file("out_file.txt");
 
     Mat img1, img2;
 
@@ -117,7 +124,7 @@ int main(int argc, char **argv) {
 
     vector<Point2f> kp2_multi;
     vector<unsigned char> success_multi;
-    OpticalFlowMultiLevel(pyr1, pyr2, cv_pt1, kp2_multi, success_multi);
+    OpticalFlowMultiLevel(pyr1, pyr2, cv_pt1, kp2_multi, success_multi, 15, 30);
 
     /// use opencv's flow for validation
     vector<Point2f> cv_pt2_single;
@@ -135,6 +142,14 @@ int main(int argc, char **argv) {
     cv::calcOpticalFlowPyrLK(
             img1_pyramid, img2_pyramid, cv_pt1, cv_pt2_multi, status_multi, cv::noArray(), cv::Size(15, 15), 3,
             cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 30, 0.01));
+
+
+    out_file << "OpticalFlowMultiLevel <--> calcOpticalFlowPyrLK" << std::endl;
+    for(int i=0; i<status_multi.size();  ++i) {
+        out_file << kp2_multi[i] << ", " << (int)success_multi[i] << " <--> "
+                 << cv_pt2_multi[i] << ", " << (int)status_multi[i] << std::endl;
+    }
+    out_file.close();
 
 
     // plot the differences of those functions
@@ -189,11 +204,13 @@ void OpticalFlowSingleLevel(
         const vector<cv::Point2f> &kpt1,
         vector<cv::Point2f> &kpt2,
         vector<unsigned char> &success,
+        int path_size,
+        int max_iters,
         bool inverse
 ) {
     // parameters
-    int half_patch_size = 4;
-    int iterations = 10;
+    int half_patch_size = path_size / 2 + 1;
+    int iterations = max_iters;
     bool have_initial = !kpt2.empty();
 
     if(!success.empty())
@@ -291,6 +308,8 @@ void OpticalFlowMultiLevel(
         const vector<cv::Point2f> &kpt1,
         vector<cv::Point2f> &kpt2,
         vector<unsigned char> &success,
+        int path_size,
+        int max_iters,
         bool inverse) {
 
     // parameters
@@ -314,6 +333,6 @@ void OpticalFlowMultiLevel(
                 kpt2[i]     /= pyramid_scale;
             }
         }
-        OpticalFlowSingleLevel(pyr1[l], pyr2[l], kpt1_top, kpt2, success, inverse);
+        OpticalFlowSingleLevel(pyr1[l], pyr2[l], kpt1_top, kpt2, success, path_size, max_iters, inverse);
     }
 }
