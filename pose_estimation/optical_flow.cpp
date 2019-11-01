@@ -111,15 +111,18 @@ int main(int argc, char **argv) {
 
     /// then test multi-level LK
     // create pyramids
-    double scale = 1.0;
-    vector<Mat> pyr1, pyr2; // image pyramids
-    Mat tmp1, tmp2;
+    std::vector<cv::Mat> pyr1, pyr2; // image pyramids
+    cv::Mat tmp1, tmp2;
     for (int i = 0; i < 4; i++) {
-        cv::resize(img1, tmp1, Size(img1.cols * scale, img1.rows * scale));
+        if(i == 0) {
+            pyr1.push_back(img1);
+            pyr2.push_back(img2);
+            continue;
+        }
+        cv::pyrDown(pyr1[i-1], tmp1, pyr1[i-1].size() / 2);
         pyr1.push_back(tmp1);
-        cv::resize(img2, tmp2, Size(img2.cols * scale, img2.rows * scale));
+        cv::pyrDown(pyr2[i-1], tmp2, pyr2[i-1].size() / 2);
         pyr2.push_back(tmp2);
-        scale *= 0.5;
     }
 
     vector<Point2f> kp2_multi;
@@ -240,7 +243,7 @@ void OpticalFlowSingleLevel(
             }
 
             // compute cost and jacobian
-            for (int x = -half_patch_size; x < half_patch_size; x++)
+            for (int x = -half_patch_size; x < half_patch_size; x++) {
                 for (int y = -half_patch_size; y < half_patch_size; y++) {
 
                     double error = 0;
@@ -251,21 +254,22 @@ void OpticalFlowSingleLevel(
 
                     if (inverse == false) {
                         // Forward Jacobian
-                        J[0] = (GetPixelValue(img2, xf+dx+1, yf+dy  ) - GetPixelValue(img2, xf+dx-1, yf+dy  )) / 2;
-                        J[1] = (GetPixelValue(img2, xf+dx,   yf+dy+1) - GetPixelValue(img2, xf+dx,   yf+dy-1)) / 2;
+                        J[0] = (GetPixelValue(img2, xf + dx + 1, yf + dy) - GetPixelValue(img2, xf + dx - 1, yf + dy)) / 2;
+                        J[1] = (GetPixelValue(img2, xf + dx, yf + dy + 1) - GetPixelValue(img2, xf + dx, yf + dy - 1)) / 2;
                     } else {
                         // Inverse Jacobian
                         // NOTE this J does not change when dx, dy is updated, so we can store it and only compute error
-                        J[0] = (GetPixelValue(img1, xf+1, yf  ) - GetPixelValue(img1, xf-1, yf  )) / 2;
-                        J[1] = (GetPixelValue(img1, xf,   yf+1) - GetPixelValue(img1, xf,   yf-1)) / 2;
+                        J[0] = (GetPixelValue(img1, xf + 1, yf) - GetPixelValue(img1, xf - 1, yf)) / 2;
+                        J[1] = (GetPixelValue(img1, xf, yf + 1) - GetPixelValue(img1, xf, yf - 1)) / 2;
                     }
 
                     // compute H, b and set cost;
-                    error = GetPixelValue(img2, xf+dx, yf+dy) - GetPixelValue(img1, xf, yf);
+                    error = GetPixelValue(img2, xf + dx, yf + dy) - GetPixelValue(img1, xf, yf);
                     H +=  J * J.transpose();
                     b += -J.transpose() * error;
                     cost += error * error;
                 }
+            }
 
             // compute update
             Eigen::Vector2d update;
@@ -315,7 +319,9 @@ void OpticalFlowMultiLevel(
     // parameters
     int pyramids = pyr1.size();
 
-    double pyramid_scale = pyr1[1].cols / (double)pyr1[0].cols;
+    double pyramid_scale = pyr1[1].cols / (double)pyr1[0].cols; // <=1
+
+    bool have_initial = !kpt2.empty();
 
     // coarse-to-fine LK tracking in pyramids
     size_t size_kp1 = kpt1.size();
@@ -326,11 +332,17 @@ void OpticalFlowMultiLevel(
         kpt *= std::pow(pyramid_scale, pyramids-1);
         kpt1_top.push_back(kpt);
     }
+    if(have_initial) {
+        for (int i = 0; i<kpt2.size(); i++) {
+            cv::Point2f &kpt = kpt2[i];
+            kpt *= std::pow(pyramid_scale, pyramids-1);
+        }
+    }
     for (int l=pyramids-1; l>=0; l--) {
         if(l < pyramids-1) {
             for (int i = 0; i < kpt2.size(); i++) {
                 kpt1_top[i] /= pyramid_scale;
-                kpt2[i]     /= pyramid_scale;
+                kpt2[i] /= pyramid_scale;
             }
         }
         OpticalFlowSingleLevel(pyr1[l], pyr2[l], kpt1_top, kpt2, success, path_size, max_iters, inverse);
