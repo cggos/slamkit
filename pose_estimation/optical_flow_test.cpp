@@ -50,6 +50,7 @@ int main(int argc, char **argv) {
     // create pyramids
     std::vector<cv::Mat> pyr1, pyr2; // image pyramids
     cv::Mat tmp1, tmp2;
+#if 0
     for (int i = 0; i < 4; i++) {
         if(i == 0) {
             pyr1.push_back(img1);
@@ -61,6 +62,16 @@ int main(int argc, char **argv) {
         cv::pyrDown(pyr2[i-1], tmp2, pyr2[i-1].size() / 2);
         pyr2.push_back(tmp2);
     }
+#else
+    double scale = 1.0;
+    for (int i = 0; i < 4; i++) {
+        cv::resize(img1, tmp1, Size(img1.cols * scale, img1.rows * scale));
+        pyr1.push_back(tmp1);
+        cv::resize(img2, tmp2, Size(img2.cols * scale, img2.rows * scale));
+        pyr2.push_back(tmp2);
+        scale *= 0.5;
+    }
+#endif
 
     vector<Point2f> kp2_multi;
     vector<unsigned char> success_multi;
