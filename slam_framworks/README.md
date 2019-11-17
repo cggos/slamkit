@@ -22,8 +22,7 @@
 ### Monocular SLAM
 
 * [Monocular SLAM](https://www.doc.ic.ac.uk/~ab9515/index.html)
-* [Monocular Visual Odometry using OpenCV](http://avisingh599.github.io/vision/monocular-vo/)
-* [uoip/monoVO-python](https://github.com/uoip/monoVO-python)
+* [mono_vo](https://github.com/cggos/slam_cg/tree/master/mono_vo)
 
 ### Stereo SLAM
 
@@ -61,9 +60,7 @@
 
 * [VINS-Fusion](https://github.com/HKUST-Aerial-Robotics/VINS-Fusion): An optimization-based multi-sensor state estimator
 
-* MSCKF
-  - [daniilidis-group/msckf_mono](https://github.com/daniilidis-group/msckf_mono): Monocular MSCKF with ROS Support
-  - [cggos/msckf_vio_cg](https://github.com/cggos/msckf_vio_cg)
+* [cggos/msckf_cg](https://github.com/cggos/msckf_cg): msckf_mono, msckf_vio
 
 * [cggos/rovio_cg](https://github.com/cggos/rovio_cg): Robust Visual Inertial Odometry
 
