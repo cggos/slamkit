@@ -1,0 +1,122 @@
+\documentclass[12pt,a4paper]{article}
+
+\include{preamble}
+
+\begin{document}
+
+\maketitle
+
+\noindent
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.3em}
+
+\section*{第一题}
+
+已知两图像上的n对匹配点，其对应的归一化平面坐标分别为 $\mathbf{p}$ 和 $\mathbf{p}^\prime$，请求取两帧之间的本质矩阵$\mathbf{E}$。
+
+答：\newline 
+
+根据对极约束
+
+$$
+{\mathbf{p}'}^T \cdot \mathbf{E} \cdot \mathbf{p} = 0
+$$
+
+写成矩阵形式：
+
+$$
+\begin{bmatrix} x' & y' & 1 \end{bmatrix}
+\cdot
+\begin{bmatrix}
+e_{1} & e_{2} & e_{3} \\
+e_{4} & e_{5} & e_{6} \\
+e_{7} & e_{8} & e_{9}
+\end{bmatrix}
+\cdot
+\begin{bmatrix} x \\ y \\ 1 \end{bmatrix} = 0
+$$
+
+矩阵 $\mathbf{E}$ 展开，写成向量形式 $\mathbf{e}$，并把所有点（n对点，n>=8）放到一个方程中，齐次线性方程组 如下：
+
+$$
+\begin{bmatrix}
+x'^1x^1 & x'^1y^1 & x'^1 &
+y'^1x^1 & y'^1y^1 & y'^1 &
+x^1     & y^1     & 1    \\
+x'^2x^2 & x'^2y^2 & x'^2 &
+y'^2x^2 & y'^2y^2 & y'^2 &
+x^2     & y^2     & 1    \\
+\vdots & \vdots & \vdots &
+\vdots & \vdots & \vdots &
+\vdots & \vdots & \vdots \\
+x'^nx^n & x'^ny^n & x'^n &
+y'^nx^n & y'^ny^n & y'^n &
+x^n     & y^n     & 1    \\
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+e_{1} \\ e_{2} \\ e_{3} \\
+e_{4} \\ e_{5} \\ e_{6} \\
+e_{7} \\ e_{8} \\ e_{9}
+\end{bmatrix} = 0
+$$
+
+即（the essential matrix lying in the null space of this matrix A）
+
+$$
+\mathbf{A} \cdot \mathbf{e} = \mathbf{0}
+\quad s.t. \quad
+\mathbf{A} \in \mathbb{R}^{n \times 9}, n \geq 8
+$$
+
+对上式 求解 最小二乘解（尺度等价性）
+
+$$
+\min_{\mathbf{e}} \|\mathbf{A} \cdot \mathbf{e}\|^2
+\quad s.t. \quad
+\|\mathbf{e}\| = 1
+\quad \text{or} \quad
+{\|\mathbf{E}\|}_F = 1
+$$
+
+SVD分解 $\mathbf{A}$（或者 EVD分解 $\mathbf{A}^T \mathbf{A}$）
+
+$$
+\text{SVD}(\mathbf{A}) = \mathbf{U} \mathbf{D} \mathbf{V}^T
+$$
+
+$\mathbf{e}$ 正比于 $\mathbf{V}$ 的最后一列，得到 $\mathbf{E}$  
+
+根据 奇异性约束 $\text{rank}(\mathbf{E})=2$，再 SVD分解 $\mathbf{E}$  
+
+$$
+\text{SVD}(\mathbf{E}) =
+\mathbf{U}_E \mathbf{D}_E \mathbf{V}_E^T
+$$
+
+求出的 $\mathbf{E}$ 可能不满足其内在性质（奇异值是 $[\sigma, \sigma, 0]^T$ 的形式），此时对 $\mathbf{D}_E$ 进行调整，假设 $\mathbf{D}_E = \text{diag}(\sigma_1, \sigma_2, \sigma_3)$ 且 $\sigma_1 \geq \sigma_2 \geq \sigma_3$，则令  
+
+$$
+\mathbf{D}_E' =
+\text{diag}(\frac{\sigma_1+\sigma_2}{2}, \frac{\sigma_1+\sigma_2}{2}, 0)
+$$
+
+或者，更简单的（尺度等价性）
+
+$$
+\mathbf{D}_E' = \text{diag}(1, 1, 0)
+$$
+
+最后，$\mathbf{E}$ 矩阵的正确估计为
+
+$$
+\mathbf{E}' =
+\mathbf{U}_E \mathbf{D}_E' \mathbf{V}_E^T
+$$
+
+
+\bibliographystyle{unsrt}
+\bibliography{bibfile}
+
+\end{document}
+
