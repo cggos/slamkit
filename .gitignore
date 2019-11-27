@@ -3,5 +3,4 @@ pose_estimation/tum_data_rgbd.h
 build/
 cmake-build-debug/
 .idea/
-*.png
 .tags*
