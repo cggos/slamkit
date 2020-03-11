@@ -29,6 +29,7 @@ find_package(Sophus)
 if(Sophus_FOUND)
     include_directories( ${Sophus_INCLUDE_DIRS} )
 endif()
+list(APPEND Sophus_LIBRARIES Sophus)
 
 find_package( Pangolin )
 include_directories( ${Pangolin_INCLUDE_DIRS} )
