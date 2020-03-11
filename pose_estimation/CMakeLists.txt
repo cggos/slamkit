@@ -14,7 +14,7 @@ endif()
 
 list( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules )
 
-find_package( OpenCV 3.1 REQUIRED )
+find_package( OpenCV 3.1 REQUIRED COMPONENTS core imgproc highgui features2d calib3d video )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 find_package( G2O REQUIRED )
@@ -70,5 +70,5 @@ target_link_libraries(direct_sparse  ${OpenCV_LIBS} ${G2O_USER_LIBS} pose_estima
 add_executable(direct_semidense direct_semidense.cpp)
 target_link_libraries(direct_semidense ${OpenCV_LIBS} ${G2O_USER_LIBS} pose_estimation)
 
-add_executable(e2rt e2rt.cpp)
-target_link_libraries( e2rt ${Sophus_LIBRARIES} )
+add_executable(e2rt e2rt.cpp epipolar_geometry.cpp)
+target_link_libraries( e2rt ${Sophus_LIBRARIES} ${OpenCV_LIBS} )

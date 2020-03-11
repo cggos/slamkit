@@ -1,8 +1,31 @@
-#include "extra.h"
-#include <iostream>
-using  namespace std;
+#include "epipolar_geometry.h"
 
-void decomposeEssentialMat( InputArray _E, OutputArray _R1, OutputArray _R2, OutputArray _t )
+#include <iostream>
+
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
+
+#include <sophus/so3.h>
+
+using namespace std;
+
+cv::Mat find_essential_mat_cv( InputArray _points1, InputArray _points2, double focal, Point2d pp)
+{
+    Mat cameraMatrix = (Mat_<double>(3,3) << focal, 0, pp.x, 0, focal, pp.y, 0, 0, 1);
+    
+    Mat points1, points2;
+    _points1.getMat().convertTo(points1, CV_64F);
+    _points2.getMat().convertTo(points2, CV_64F);
+
+    Mat fundamental_matrix;
+    fundamental_matrix = findFundamentalMat ( points1, points2, CV_FM_8POINT );
+    Mat E;
+    E = cameraMatrix.t()* fundamental_matrix * cameraMatrix;
+    
+    return E;
+}
+
+void decompose_essential_mat_cv( InputArray _E, OutputArray _R1, OutputArray _R2, OutputArray _t )
 {
     Mat E = _E.getMat().reshape(1, 3);
     CV_Assert(E.cols == 3 && E.rows == 3);
@@ -26,7 +49,33 @@ void decomposeEssentialMat( InputArray _E, OutputArray _R1, OutputArray _R2, Out
     t.copyTo(_t);
 }
 
-int recoverPose( InputArray E, InputArray _points1, InputArray _points2, OutputArray _R,
+void decompose_essential_mat(const Matrix3d &E, Matrix3d &R1, Matrix3d &R2, Vector3d &t1, Vector3d &t2) {
+    // SVD and fix sigular values
+    JacobiSVD<MatrixXd> svd(E, ComputeThinU | ComputeThinV);
+    Matrix3d m3U = svd.matrixU();
+    Matrix3d m3V = svd.matrixV();
+    Vector3d v3S = svd.singularValues();
+
+    double temp = (v3S[0]+v3S[1])/2;
+    Matrix3d m3S(Vector3d(temp, temp, 0).asDiagonal());
+
+    Eigen::Matrix3d m3R_z_p = Eigen::AngleAxisd( M_PI/2, Eigen::Vector3d(0,0,1)).toRotationMatrix();
+    Eigen::Matrix3d m3R_z_n = Eigen::AngleAxisd(-M_PI/2, Eigen::Vector3d(0,0,1)).toRotationMatrix();
+    cout << "m3R_z_p = \n" << m3R_z_p << endl;
+    cout << "m3R_z_n = \n" << m3R_z_n << endl;
+
+    // set t1, t2, R1, R2 
+    Matrix3d t_wedge1 = m3U * m3R_z_p * m3S * m3U.transpose();
+    Matrix3d t_wedge2 = m3U * m3R_z_n * m3S * m3U.transpose();
+
+    t1 = Sophus::SO3::vee(t_wedge1); 
+    t2 = Sophus::SO3::vee(t_wedge2);
+
+    R1 = m3U * m3R_z_p.transpose() * m3V.transpose();
+    R2 = m3U * m3R_z_n.transpose() * m3V.transpose();
+}
+
+int recover_pose_cv(InputArray E, InputArray _points1, InputArray _points2, OutputArray _R,
                      OutputArray _t, double focal, Point2d pp, InputOutputArray _mask)
 {
     Mat points1, points2, cameraMatrix;
@@ -177,22 +226,6 @@ int recoverPose( InputArray E, InputArray _points1, InputArray _points2, OutputA
         if (_mask.needed()) mask4.copyTo(_mask);
         return good4;
     }
-}
-
-cv::Mat findEssentialMat( InputArray _points1, InputArray _points2, double focal, Point2d pp)
-{
-    Mat cameraMatrix = (Mat_<double>(3,3) << focal, 0, pp.x, 0, focal, pp.y, 0, 0, 1);
-    
-    Mat points1, points2;
-    _points1.getMat().convertTo(points1, CV_64F);
-    _points2.getMat().convertTo(points2, CV_64F);
-
-    Mat fundamental_matrix;
-    fundamental_matrix = findFundamentalMat ( points1, points2, CV_FM_8POINT );
-    Mat E;
-    E = cameraMatrix.t()* fundamental_matrix * cameraMatrix;
-    
-    return E;
 }
 
 
