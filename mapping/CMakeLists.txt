@@ -1,5 +1,7 @@
 cmake_minimum_required( VERSION 2.8 )
 
+project(mapping)
+
 set( CMAKE_BUILD_TYPE Release )
 set( CMAKE_CXX_FLAGS "-std=c++11 -march=native -O3 -fopenmp" )
 
@@ -11,25 +13,33 @@ if(NOT EXISTS ${TUM_SRC})
             SHOW_PROGRESS)
 endif()
 
-# opencv
-find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
+find_package(Eigen3 REQUIRED)
+if(Eigen3_FOUND)
+    include_directories( ${Eigen3_INCLUDE_DIRS} )
+endif()
 
-# eigen
-include_directories( "/usr/include/eigen3/" )
+find_package(Sophus)
+if(Sophus_FOUND)
+    include_directories( ${Sophus_INCLUDE_DIRS} )
+    # link_libraries(Sophus)
+endif()
+list(APPEND Sophus_LIBRARIES Sophus)
 
-# Sophus
-find_package( Sophus REQUIRED )
-include_directories( ${Sophus_INCLUDE_DIRS} )
+find_package( OpenCV 3 REQUIRED COMPONENTS core imgproc highgui )
+if( OpenCV_FOUND )
+    include_directories( ${OpenCV_INCLUDE_DIRS} )
+endif()
 
-# pcl
 find_package( PCL REQUIRED COMPONENT common io filters )
-include_directories( ${PCL_INCLUDE_DIRS} )
-add_definitions( ${PCL_DEFINITIONS} )
+if( PCL_FOUND )
+    include_directories( ${PCL_INCLUDE_DIRS} )
+    add_definitions( ${PCL_DEFINITIONS} )
+endif()
 
-# octomap
 find_package( octomap REQUIRED )
-include_directories( ${OCTOMAP_INCLUDE_DIRS} )
+if( octomap_FOUND )
+    include_directories( ${OCTOMAP_INCLUDE_DIRS} )
+endif()
 
 add_executable( mapping_rgbd mapping_rgbd.cpp )
 target_link_libraries( mapping_rgbd ${OpenCV_LIBS} ${PCL_LIBRARIES} ${OCTOMAP_LIBRARIES} )

@@ -1,5 +1,6 @@
 cmake_minimum_required( VERSION 2.8 )
-project( vo1 )
+
+project( visual_odometry )
 
 set( CMAKE_BUILD_TYPE "Release" )
 set( CMAKE_CXX_FLAGS "-std=c++11 -O3" )
@@ -47,7 +48,9 @@ set(G2O_LIBS g2o_core g2o_stuff g2o_types_sba g2o_solver_csparse g2o_csparse_ext
 #     g2o_stuff g2o_types_sclam2d g2o_parser g2o_solver_pcg g2o_types_data g2o_types_sim3 cxsparse)
 
 find_package( Pangolin )
-include_directories( ${Pangolin_INCLUDE_DIRS} )
+if(Pangolin_FOUND)
+    include_directories( ${Pangolin_INCLUDE_DIRS} )
+endif()
 
 add_subdirectory(visual_tracking)
 add_subdirectory(bundle_adjustment)
