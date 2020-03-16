@@ -1,9 +1,11 @@
-cmake_minimum_required( VERSION 2.8 )
+cmake_minimum_required(VERSION 2.8)
 
-project( visual_odometry )
+project(visual_odometry)
 
-set( CMAKE_BUILD_TYPE "Release" )
-set( CMAKE_CXX_FLAGS "-std=c++11 -O3" )
+set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
+
+set(CMAKE_CXX_STANDARD 11)
 
 set(TUM_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tum_data_rgbd.h)
 if(NOT EXISTS ${TUM_SRC})
@@ -13,26 +15,35 @@ if(NOT EXISTS ${TUM_SRC})
             SHOW_PROGRESS)
 endif()
 
-list( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules )
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
-find_package( CSparse REQUIRED )
+find_package(CSparse REQUIRED)
 include_directories(${CSPARSE_INCLUDE_DIR})
+
+find_package(Cholmod REQUIRED)
+include_directories(${CHOLMOD_INCLUDE_DIR})
+# ${CHOLMOD_LIBRARIES}
 
 find_package(Eigen3 REQUIRED)
 if(Eigen3_FOUND)
-    include_directories( ${Eigen3_INCLUDE_DIRS} )
+    include_directories(${Eigen3_INCLUDE_DIRS})
 endif()
 
 find_package(Sophus)
 if(Sophus_FOUND)
-    include_directories( ${Sophus_INCLUDE_DIRS} )
+    include_directories(${Sophus_INCLUDE_DIRS})
     # link_libraries(Sophus)
 endif()
 list(APPEND Sophus_LIBRARIES Sophus)
 
-find_package( OpenCV 3 REQUIRED COMPONENTS core imgproc highgui features2d calib3d video )
+find_package(OpenCV 3 REQUIRED COMPONENTS core imgproc highgui features2d calib3d video)
 if( OpenCV_FOUND )
-    include_directories( ${OpenCV_INCLUDE_DIRS} )
+    include_directories(${OpenCV_INCLUDE_DIRS})
+endif()
+
+find_package(Ceres REQUIRED)
+if(Ceres_FOUND)
+    include_directories(${CERES_INCLUDE_DIRS})
 endif()
 
 find_package(G2O REQUIRED)
@@ -47,13 +58,13 @@ set(G2O_LIBS g2o_core g2o_stuff g2o_types_sba g2o_solver_csparse g2o_csparse_ext
 #     g2o_solver_csparse g2o_solver_structure_only g2o_csparse_extension g2o_opengl_helper g2o_solver_dense
 #     g2o_stuff g2o_types_sclam2d g2o_parser g2o_solver_pcg g2o_types_data g2o_types_sim3 cxsparse)
 
-find_package( Pangolin )
+find_package(Pangolin)
 if(Pangolin_FOUND)
-    include_directories( ${Pangolin_INCLUDE_DIRS} )
+    include_directories(${Pangolin_INCLUDE_DIRS})
 endif()
 
 add_subdirectory(visual_tracking)
-add_subdirectory(bundle_adjustment)
+add_subdirectory(ba_gauss_newton)
 add_subdirectory(mono_vo)
 
 add_library(pose_estimation SHARED pose_estimation.cpp)

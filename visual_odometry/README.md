@@ -45,29 +45,7 @@ The PnP problem is relevant in 3D object tracking and camera localization / trac
 * RANSAC
 
 
-
-
 ## Direct Method VO
-
-
-## Bundle Adjustment
-
-* [Bundle adjustment (wikipedia)](https://en.wikipedia.org/wiki/Bundle_adjustment)
-* [sba](http://users.ics.forth.gr/~lourakis/sba/): A Generic Sparse Bundle Adjustment C/C++ Package Based on the Levenberg-Marquardt Algorithm
-* [cvsba](https://www.uco.es/investiga/grupos/ava/node/39): an OpenCV wrapper for sba library
-* [sparseLM](http://users.ics.forth.gr/~lourakis/sparseLM/) : Sparse Levenberg-Marquardt nonlinear least squares in C/C++
-* [Bundle Adjustment in the Large](http://grail.cs.washington.edu/projects/bal/)
-* [Multicore Bundle Adjustment](http://grail.cs.washington.edu/projects/mcba/)
-
-* [Ceres-Solver 从入门到上手视觉SLAM位姿优化问题](https://blog.csdn.net/u011178262/article/details/88774577)
-
-* [SLAM Implementation: Bundle Adjustment with g2o](https://fzheng.me/2016/03/15/g2o-demo/)
-
-Sparse Hessian matrix :
-
-<div align=center>
-  <img src="images/mat_H.png">
-</div>
 
 
 # Dataset
@@ -75,7 +53,3 @@ Sparse Hessian matrix :
 ### TUM Dataset
 
 * rgbd_dataset_freiburg2_desk
-
-###  BAL Dataset
-
-* Bundle Adjustment in the Large
