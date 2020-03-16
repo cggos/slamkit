@@ -1,4 +1,3 @@
-map/tum_data_rgbd.h
 build/
 cmake-build-debug/
 .idea/
