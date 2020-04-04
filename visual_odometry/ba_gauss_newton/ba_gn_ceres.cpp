@@ -81,8 +81,8 @@ int main(int argc, char **argv)
     VecVector2d p2d;
     VecVector3d p3d;
     {
-        std::string p2d_file = "../../../bundle_adjustment/ba_gauss_newton/data/p2d.txt";
-        std::string p3d_file = "../../../bundle_adjustment/ba_gauss_newton/data/p3d.txt";
+        std::string p2d_file = "../ba_gauss_newton/data/p2d.txt";
+        std::string p3d_file = "../ba_gauss_newton/data/p3d.txt";
 
         std::ifstream fileP2D(p2d_file);
         std::ifstream fileP3D(p3d_file);

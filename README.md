@@ -1,5 +1,6 @@
 # SLAM Park
 
+* [Simultaneous localization and mapping (wikipedia)](https://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping)
 * [SLAM Blog (CSDN)](https://blog.csdn.net/u011178262/article/category/7456224)
 * [Study Notes for SLAM (LaTeX on Overleaf)](https://www.overleaf.com/read/gtmwqbvfctkn)
 
