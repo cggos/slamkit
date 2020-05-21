@@ -2,3 +2,7 @@ build/
 cmake-build-debug/
 .idea/
 .tags*
+
+_build/
+_static/
+_templates/

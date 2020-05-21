@@ -1,28 +1,23 @@
-# Maplab
+## Maplab
 
 * [ethz-asl/maplab](https://github.com/ethz-asl/maplab/): An open visual-inertial mapping framework.
 
 -----
 
-# Maplab Framework
+### Maplab Framework
 
-<div align=center>
-  <img src="https://cloud.githubusercontent.com/assets/966785/6546069/2a4ce0b2-c5a4-11e4-8613-ddcf5e8b0591.png">
-</div>
+![](https://cloud.githubusercontent.com/assets/966785/6546069/2a4ce0b2-c5a4-11e4-8613-ddcf5e8b0591.png)
 
-## Typical workflow
+### Typical workflow
 
-<div align=center>
-  <img src="https://github.com/ethz-asl/maplab/wiki/images/diagrams/maplab_dataflow.png">
-</div>
+![](https://github.com/ethz-asl/maplab/wiki/images/diagrams/maplab_dataflow.png)
 
-### Online ROVIOLI frontend
 
-<div align=center>
-  <img src="https://github.com/ethz-asl/maplab/wiki/images/rovioli-overview.png">
-</div>
+#### Online ROVIOLI frontend
 
-### Offline maplab console
+![](https://github.com/ethz-asl/maplab/wiki/images/rovioli-overview.png)
+
+#### Offline maplab console
 
 * a convenient **console user interface** and a **map manager** to access the maps,
 * a **plug-in architecture** to easily extend it with new commands and algorithms,

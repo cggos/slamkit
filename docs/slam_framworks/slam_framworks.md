@@ -1,14 +1,17 @@
-# Open Source SLAM Frameworks
+## SLAM Frameworks Overview
 
 -----
 
 [TOC]
 
-# Filter-SLAM
+### Filter-SLAM
 
 * [cggos/filter_slam_cg](https://github.com/cggos/filter_slam_cg)
 
-# vSLAM
+### vSLAM
+
+* [Monocular SLAM](https://www.doc.ic.ac.uk/~ab9515/index.html)
+* [mono_vo](https://github.com/cggos/slam_cg/tree/master/mono_vo)
 
 * FOVIS: a visual odometry library that estimates the 3D motion of a camera using a source of depth information for each pixel.
   - Paper: *Visual Odometry and Mapping for Autonomous Flight Using an RGB-D Camera*
@@ -17,18 +20,8 @@
 
 * SOFT
 
-## Cams Number
 
-### Monocular SLAM
-
-* [Monocular SLAM](https://www.doc.ic.ac.uk/~ab9515/index.html)
-* [mono_vo](https://github.com/cggos/slam_cg/tree/master/mono_vo)
-
-### Stereo SLAM
-
-### RGB-D SLAM
-
-## Feature-based Method
+#### Feature-based Method
 
 * [cggos/ptam_cg](https://github.com/cggos/ptam_cg)
 
@@ -42,29 +35,38 @@
 
 * [UcoSLAM](http://www.uco.es/investiga/grupos/ava/node/62) is a library for SLAM using keypoints that able to operate with **monocular cameras, stereo cameras, rgbd cameras**
 
-## Semi-Direct Method
+#### Semi-Direct Method
 
 * [cggos/svo_cg](https://github.com/cggos/svo_cg): a **Semi-direct Monocular Visual Odometry** pipeline
 * [HeYijia/svo_edgelet](https://github.com/HeYijia/svo_edgelet): A more robust SVO with edgelet feature
 
-## Direct Method
+#### Direct Method
 
 * DSO
 * [cggos/lsd_slam_cg](https://github.com/cggos/lsd_slam_cg)
 
-# VI-SLAM
+
+### VI-SLAM/VIO
 
 * [cggos/okvis_cg](https://github.com/cggos/okvis_cg)
 
 * [cggos/vins_mono_cg](https://github.com/cggos/vins_mono_cg)
 
-* [VINS-Fusion](https://github.com/HKUST-Aerial-Robotics/VINS-Fusion): An optimization-based multi-sensor state estimator
+* [cggos/vins_fusion_cg](https://github.com/cggos/vins_fusion_cg)
 
-* [cggos/msckf_cg](https://github.com/cggos/msckf_cg): msckf_mono, msckf_vio
+* [cggos/msckf_cg](https://github.com/cggos/msckf_cg)
 
 * [cggos/rovio_cg](https://github.com/cggos/rovio_cg): Robust Visual Inertial Odometry
 
-# Laser SLAM
 
-* hector_slam
-* gmapping
+### Laser SLAM
+
+* [rplidar_ros](https://github.com/robopeak/rplidar_ros.git) (branch `slam`)
+* [hector_slam](https://github.com/tu-darmstadt-ros-pkg/hector_slam.git)
+* [openslam_gmapping](https://github.com/OpenSLAM-org/openslam_gmapping.git)
+* [slam_gmapping](https://github.com/ros-perception/slam_gmapping.git)
+
+Example Run:
+
+* 通过 **hector_slam** 建图，运行 `roslaunch rplidar_ros view_slam.launch`，效果如下
+  ![](images/hector_slam.jpg)
