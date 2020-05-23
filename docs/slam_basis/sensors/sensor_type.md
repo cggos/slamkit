@@ -1,17 +1,17 @@
-# SLAM Sensors
+## Sensor Types
 
 -----
 
-## Camera
+### Camera
 
-## IMU
+### IMU
 
-## radar
+### radar
 
 * [LiDARNews](https://lidarnews.com/)
 * [在自动驾驶中，单线激光雷达能干什么?](https://www.leiphone.com/news/201612/kEUZbebrEA2WJRVE.html)
 
-### rplidar
+#### rplidar
 
 ![](images/rplidar.jpg)
 
@@ -21,6 +21,6 @@
 * 运行 `roslaunch rplidar_ros view_rplidar.launch`，效果如下
   ![](images/view_rplidar.jpg)
 
-## GPS
+### GPS
 
-## Sonar
+### Sonar

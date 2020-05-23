@@ -11,14 +11,16 @@ Welcome to SlamPark's documentation!
 SLAM Study Notes:
 
 * `SLAM Blog (CSDN) <https://blog.csdn.net/u011178262/article/category/7456224/>`_
-* https://cggos.github.io/categories.html#SLAM
+* `SLAM Notes (github.io) <https://cggos.github.io/categories.html#SLAM>`_
 * `SLAM Notes (LaTeX on Overleaf) <https://www.overleaf.com/read/drmrxvnphrck/>`_
 
 
 SLAM Theoretical Basis
 -------------------------
 
-* Mathematics: https://github.com/cggos/maths_cg
+* Mathematics
+  
+  * https://github.com/cggos/maths_cg
 
 * Computer Vision
 
@@ -27,9 +29,17 @@ SLAM Theoretical Basis
 
 * Kinematics and Dynamics
 
-* State Estimation: https://github.com/cggos/state_estimation_cg
+* State Estimation
+  
+  * https://github.com/cggos/state_estimation_cg
 
 * Sensors
+
+  * Sensor Types
+  
+  * Sensor Calibration
+    
+    * https://cggos.github.io/robotics/robot-calibration.html
 
 
 
@@ -41,7 +51,11 @@ Localization & Mapping
 * SLAM Odometry
 
   * Visual Odometry/Visual Inertial Odometry
-  * GNSS & INS: https://github.com/cggos/gnss_ins_cg
+  
+  * GNSS & INS
+    
+    * https://github.com/cggos/gnss_ins_cg
+
   * Wheel Odometry
 
 * SLAM Loop Closure
@@ -71,9 +85,9 @@ SLAM Applications
 -------------------------
 
 * SLAM Modules
-* AR
-* Drone
-* Ground Mobile Robot
+* AR (6 DoF)
+* Drone (:math:`\approx` 4 DoF)
+* Ground Mobile Robot (3 DoF)
 
 
 
