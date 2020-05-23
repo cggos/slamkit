@@ -27,3 +27,5 @@ target_link_libraries( eigen_sophus ${Sophus_LIBRARIES} )
 
 add_executable( eigen_rotation eigen_rotation.cpp)
 target_link_libraries( eigen_rotation ${Sophus_LIBRARIES} )
+
+add_executable( eigen_quaternion_slerp eigen_quaternion_slerp.cpp )
