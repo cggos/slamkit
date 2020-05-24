@@ -6,7 +6,35 @@
 
 ### Filter-SLAM
 
-* [cggos/filter_slam_cg](https://github.com/cggos/filter_slam_cg)
+#### EKF-SLAM
+
+* [The Extended Kalman Filter - SLAM](https://www.doc.ic.ac.uk/~ns5517/topicsWebsite/EKF-SLAM.html)
+
+* [EKF Slam Example](https://www.mathworks.com/matlabcentral/fileexchange/39992-ekf-slam-example)
+
+* [EKF-SLAM-on-Manifold](https://github.com/RomaTeng/EKF-SLAM-on-Manifold)
+
+* [damarquezg/SLAMTB](https://github.com/damarquezg/SLAMTB): EKF-SLAM TOOLBOX FOR MATLAB
+
+##### MonoSLAM
+
+* [cggos/SceneLib2](https://github.com/cggos/SceneLib2)
+  - MonoSLAM open-source library
+  - an open-source C++ library for SLAM originally designed and implemented by **Andrew Davison** and colleagues at the University of Oxford
+
+* [MATLAB Implementation of MonoSLAM](http://perso.ensta-paristech.fr/~filliat/Courses/2011_projets_C10-2/BRUNEAU_DUBRAY_MURGUET/monoSLAM_bruneau_dubray_murguet_en.html)
+
+* [EKF based Monocular SLAM](http://vision.ia.ac.cn/Students/gzp/monocularslam.html)
+
+* [Mono-Slam Implementation in ROS](https://github.com/rrg-polito/mono-slam)
+
+##### EKFmonocularSLAM
+
+* [EKFmonocularSLAM](https://openslam-org.github.io/ekfmonoslam.html)
+
+* [1-Point RANSAC Inverse Depth EKF Monocular SLAM](http://webdiis.unizar.es/~jcivera/code/1p-ransac-ekf-monoslam.html)
+
+
 
 ### vSLAM
 
