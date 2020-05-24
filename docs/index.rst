@@ -123,6 +123,8 @@ SLAM QA
    :hidden:
    :caption: Multiple Sensor Fusion
 
+   slam_msf/index
+
 
 .. toctree::
    :maxdepth: 1
