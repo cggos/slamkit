@@ -51,11 +51,7 @@ Localization & Mapping
 * SLAM Odometry
 
   * Visual Odometry/Visual Inertial Odometry
-  
-  * GNSS & INS
-    
-    * https://github.com/cggos/gnss_ins_cg
-
+  * Laser Odometry
   * Wheel Odometry
 
 * SLAM Loop Closure
@@ -63,6 +59,16 @@ Localization & Mapping
   * Visual Vocabulary
 
 * SLAM Mapping
+
+
+
+GNSS & INS
+-------------------------
+
+* INS
+* GNSS
+* GIS
+* Geomagnetics
 
 
 
@@ -78,6 +84,7 @@ SLAM Benchmark
 
 * SLAM Benchmark
 * SLAM Dataset
+* SLAM Simulation
 
 
 
@@ -116,6 +123,16 @@ SLAM QA
    slam_odometry/index
    slam_loopclosure/index
    slam_mapping/index
+
+
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: GNSS & INS
+
+   slam_gnss_ins/index
+
 
 
 .. toctree::
