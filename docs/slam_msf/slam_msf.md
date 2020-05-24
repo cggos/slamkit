@@ -1,6 +1,6 @@
 # Multi Sensor Fusion
 
-![image](./images/sensor_fusion_methods.jpg)
+![](./images/sensor_fusion_methods.jpg)
 
 -----
 

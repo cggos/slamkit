@@ -6,4 +6,7 @@
 
 ## Sphinx Docs
 
-* build: `make html`
+```sh
+cd docs
+make html
+```
