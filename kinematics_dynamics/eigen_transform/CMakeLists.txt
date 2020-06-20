@@ -13,8 +13,6 @@ set(Sophus_LIBRARIES Sophus)
 find_package( Pangolin )
 include_directories( ${Pangolin_INCLUDE_DIRS} )
 
-add_executable( eigen_matrix eigen_matrix.cpp )
-
 add_executable( eigen_geometry eigen_geometry.cpp )
 
 add_executable( eigen_geometry_quickref eigen_geometry_quickref.cpp )
