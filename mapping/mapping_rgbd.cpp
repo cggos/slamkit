@@ -17,7 +17,7 @@ int main( int argc, char** argv )
     cg::TUMDataRGBD tum_data_rgbd("/home/cg/dev_sdb/datasets/TUM/RGBD-SLAM-Dataset/rgbd_dataset_freiburg1_xyz/");
 
     vector<cv::Mat> colorImgs, depthImgs;
-    vector<Eigen::Isometry3d> poses;
+    vector<Eigen::Isometry3d, Eigen::aligned_allocator<Eigen::Isometry3d>> poses;
 
     for(int i=0; i<count; ++i) {
         cv::Mat img_color;
