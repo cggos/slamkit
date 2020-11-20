@@ -23,13 +23,31 @@ int main() {
               << R << std::endl
               << std::endl;
 
-    Eigen::Vector3d omega(0.01, 0.02, 0.03);
-
     Sophus::SO3d R_SO3(R);
+    std::cout << "R_SO3:\n"
+              << R_SO3.matrix() << std::endl
+              << std::endl;
+
+    Eigen::Quaterniond R_q(R);
+
+    Eigen::Vector3d omega(0.01, 0.02, 0.03);
+    std::cout << "omega: "
+              << omega.transpose() << std::endl
+              << std::endl;
+
+    //------------------------------------------------------------------------------------
+
+    Sophus::SO3d SO3_omega = Sophus::SO3d::exp(omega);
+    Eigen::AngleAxisd angle_axis(SO3_omega.matrix());
+    std::cout << "angle_axis: "
+              << angle_axis.angle() * angle_axis.axis().transpose() << std::endl
+              << std::endl;
+
+    //------------------------------------------------------------------------------------
+
     Sophus::SO3d R_SO3_updated = R_SO3 * Sophus::SO3d::exp(omega);
     Eigen::Matrix3d R1 = R_SO3_updated.matrix();
 
-    Eigen::Quaterniond R_q(R);
     Eigen::Quaterniond q_update;
     q_update.w() = 1;
     q_update.vec() = 0.5 * omega;
