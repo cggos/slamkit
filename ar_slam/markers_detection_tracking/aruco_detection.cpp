@@ -22,7 +22,7 @@ int main() {
     // cv::aruco::drawDetectedMarkers(outputImage, markerCorners, markerIds);
 
     cv::VideoCapture inputVideo;
-    inputVideo.open(4);
+    inputVideo.open(0);
     while (inputVideo.grab()) {
         cv::Mat image, imageOut;
         inputVideo.retrieve(image);

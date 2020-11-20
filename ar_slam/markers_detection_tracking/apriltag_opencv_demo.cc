@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Initialize camera
-    cv::VideoCapture cap(4);
+    cv::VideoCapture cap(0);
     if (!cap.isOpened()) {
         std::cerr << "Couldn't open video capture device" << std::endl;
         return -1;
