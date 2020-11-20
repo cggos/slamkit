@@ -15,11 +15,11 @@ SLAM Study Notes:
 * `SLAM Notes (LaTeX on Overleaf) <https://www.overleaf.com/read/drmrxvnphrck/>`_
 
 
-SLAM Theoretical Basis
+SLAM Basis
 -------------------------
 
 * Mathematics
-  
+
   * https://github.com/cggos/maths_cg
 
 * Computer Vision
@@ -30,16 +30,20 @@ SLAM Theoretical Basis
 * Kinematics and Dynamics
 
 * State Estimation
-  
+
   * https://github.com/cggos/state_estimation_cg
 
 * Sensors
 
   * Sensor Types
-  
+
   * Sensor Calibration
-    
+
     * https://cggos.github.io/robotics/robot-calibration.html
+
+* ROS
+
+  * https://github.com/cggos/ros_park
 
 
 
@@ -74,8 +78,6 @@ GNSS & INS
 
 Multiple Sensor Fusion
 -------------------------
-
-* https://github.com/cggos/sensor_fusion_cg
 
 
 
