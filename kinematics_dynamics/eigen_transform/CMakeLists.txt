@@ -4,11 +4,14 @@ project( eigen_demos )
 set( CMAKE_BUILD_TYPE "Release" )
 set( CMAKE_CXX_FLAGS "-std=c++11 -O3" )
 
-include_directories( "/usr/include/eigen3" )
+find_package(Eigen3 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIR})
 
-find_package( Sophus REQUIRED )
-include_directories( ${Sophus_INCLUDE_DIRS} )
-set(Sophus_LIBRARIES Sophus)
+find_package(Sophus REQUIRED)
+if(Sophus_FOUND)
+  include_directories(${Sophus_INCLUDE_DIRS})
+  # set(Sophus_LIBRARIES Sophus)
+endif()
 
 find_package( Pangolin )
 include_directories( ${Pangolin_INCLUDE_DIRS} )
