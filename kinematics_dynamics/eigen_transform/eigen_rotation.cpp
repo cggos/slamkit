@@ -30,6 +30,22 @@ int main() {
 
     Eigen::Quaterniond R_q(R);
 
+    //------------------------------------------------------------------------------------
+
+    Eigen::Quaterniond q0(R);
+    Eigen::Quaterniond q1(R.transpose());
+    Eigen::Quaterniond q2 = q0.inverse();
+    std::cout << "q0: " << q0.coeffs().transpose() << std::endl;
+    std::cout << "q1: " << q1.coeffs().transpose() << std::endl;
+    std::cout << "q2: " << q2.coeffs().transpose() << std::endl;
+    Eigen::Matrix3d Rq1 = q1.toRotationMatrix();
+    Eigen::Matrix3d Rq2 = q2.toRotationMatrix();
+    std::cout << "Rq1:\n" << Rq1 << std::endl;
+    std::cout << "Rq2:\n" << Rq2 << std::endl;
+    std::cout << std::endl;
+
+    //------------------------------------------------------------------------------------
+
     Eigen::Vector3d omega(0.01, 0.02, 0.03);
     std::cout << "omega: "
               << omega.transpose() << std::endl
