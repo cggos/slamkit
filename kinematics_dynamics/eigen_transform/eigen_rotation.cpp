@@ -1,3 +1,5 @@
+#include <ceres/rotation.h>
+
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <iostream>
@@ -40,8 +42,10 @@ int main() {
     std::cout << "q2: " << q2.coeffs().transpose() << std::endl;
     Eigen::Matrix3d Rq1 = q1.toRotationMatrix();
     Eigen::Matrix3d Rq2 = q2.toRotationMatrix();
-    std::cout << "Rq1:\n" << Rq1 << std::endl;
-    std::cout << "Rq2:\n" << Rq2 << std::endl;
+    std::cout << "Rq1:\n"
+              << Rq1 << std::endl;
+    std::cout << "Rq2:\n"
+              << Rq2 << std::endl;
     std::cout << std::endl;
 
     //------------------------------------------------------------------------------------
@@ -96,6 +100,19 @@ int main() {
 
     std::cout << "P1: " << P1.transpose() << std::endl;
     std::cout << "P2: " << P2.transpose() << std::endl;
+
+    std::cout << std::endl;
+
+    //------------------------------------------------------------------------------------
+
+    double Rarr[9];
+    Eigen::Map<Eigen::Matrix<double, 3, 3, Eigen::RowMajor>> Rr(Rarr);
+    Rr = R;
+    double q_ceres[4];
+    ceres::RotationMatrixToQuaternion<double>(Rarr, q_ceres);
+    std::cout << "R --> q (Ceres): " << q_ceres[1] << ", " << q_ceres[2] << ", " << q_ceres[3] << ", " << q_ceres[0] << std::endl;
+    Eigen::Quaterniond q_eigen(R);
+    std::cout << "R --> q (Eigen): " << q_eigen.coeffs().transpose() << std::endl;
 
     return 0;
 }

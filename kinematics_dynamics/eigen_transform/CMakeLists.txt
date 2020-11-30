@@ -13,6 +13,11 @@ if(Sophus_FOUND)
   # set(Sophus_LIBRARIES Sophus)
 endif()
 
+find_package(Ceres REQUIRED)
+if(Ceres_FOUND)
+  include_directories(${CERES_INCLUDE_DIRS})
+endif()
+
 find_package( Pangolin )
 include_directories( ${Pangolin_INCLUDE_DIRS} )
 
@@ -27,6 +32,6 @@ add_executable( eigen_sophus eigen_sophus.cpp )
 target_link_libraries( eigen_sophus ${Sophus_LIBRARIES} )
 
 add_executable( eigen_rotation eigen_rotation.cpp)
-target_link_libraries( eigen_rotation ${Sophus_LIBRARIES} )
+target_link_libraries( eigen_rotation ${Sophus_LIBRARIES} ${CERES_LIBRARIES} )
 
 add_executable( eigen_quaternion_slerp eigen_quaternion_slerp.cpp )
