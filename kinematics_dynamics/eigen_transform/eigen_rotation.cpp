@@ -105,11 +105,8 @@ int main() {
 
     //------------------------------------------------------------------------------------
 
-    double Rarr[9];
-    Eigen::Map<Eigen::Matrix<double, 3, 3, Eigen::RowMajor>> Rr(Rarr);
-    Rr = R;
     double q_ceres[4];
-    ceres::RotationMatrixToQuaternion<double>(Rarr, q_ceres);
+    ceres::RotationMatrixToQuaternion<double>(R.data(), q_ceres);
     std::cout << "R --> q (Ceres): " << q_ceres[1] << ", " << q_ceres[2] << ", " << q_ceres[3] << ", " << q_ceres[0] << std::endl;
     Eigen::Quaterniond q_eigen(R);
     std::cout << "R --> q (Eigen): " << q_eigen.coeffs().transpose() << std::endl;
