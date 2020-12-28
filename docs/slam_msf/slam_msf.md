@@ -12,6 +12,8 @@
 
 * [传感器融合：通向自动驾驶时代的关键一步](https://www.leiphone.com/news/201708/HH3MYTdsDx3mFx0S.html)
 
+![](./images/sensor_fusion_autonomous_driving.jpg)
+
 ## MSF Examples
 
 * [cggos/lidar_radar_ekf_fusion](https://github.com/cggos/lidar_radar_ekf_fusion)
