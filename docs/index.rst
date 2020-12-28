@@ -6,6 +6,8 @@
 Welcome to SlamPark's documentation!
 ====================================
 
+.. image:: imgs/slam.jpg
+
 * `Simultaneous localization and mapping (wikipedia)] <https://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping/>`_
 
 SLAM Study Notes:
