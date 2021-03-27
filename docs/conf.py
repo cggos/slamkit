@@ -38,16 +38,25 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
+    'recommonmark',
+    'sphinx_markdown_tables'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
-from recommonmark.parser import CommonMarkParser
-source_parsers = {
-    '.md': CommonMarkParser,
+# from recommonmark.parser import CommonMarkParser
+# source_parsers = {
+#     '.md': CommonMarkParser,
+# }
+# source_suffix = ['.rst', '.md']
+
+# ref: https://www.sphinx-doc.org/en/master/usage/markdown.html
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'markdown',
+    '.md': 'markdown',
 }
-source_suffix = ['.rst', '.md']
 
 # The master toctree document.
 master_doc = 'index'
