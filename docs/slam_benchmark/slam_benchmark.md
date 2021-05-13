@@ -20,3 +20,10 @@
 > 1. get the ground truth file, e.g. EuRoC **data.csv**
 > 2. convert it to TUM format **data.tum**, we can use `evo`
 > 3. evaluate: `./evaluate_ate.py data.tum pose_out.tum --plot result --verbose`
+
+
+## rpg_trajectory_evaluation
+
+* https://github.com/uzh-rpg/rpg_trajectory_evaluation
+
+* https://github.com/rpng/open_vins/tree/master/ov_eval
