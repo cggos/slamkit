@@ -7,7 +7,13 @@
 
 ## Sphinx Docs
 
-```sh
-cd docs
-make html
-```
+* install requirements
+  ```sh
+  $ pip install -r docs/requirements.txt
+  ```
+
+* build
+  ```sh
+  cd docs
+  make html
+  ```
