@@ -65,25 +65,46 @@ int main() {
 
     //------------------------------------------------------------------------------------
 
+    omega *= 10;
+
+    Eigen::Vector3d v30 = R_SO3.log();
+
+    Eigen::Vector3d vec_plus = v30 + omega;
+
+    Sophus::SO3d R_SO3_plus = Sophus::SO3d::exp(vec_plus);
+    Eigen::Matrix3d R00 = R_SO3_plus.matrix();
+
+    Eigen::Quaterniond q_plus(Eigen::AngleAxisd(vec_plus.norm(), vec_plus.normalized()));
+    Eigen::Matrix3d R01 = q_plus.matrix();
+
     Sophus::SO3d R_SO3_updated = R_SO3 * Sophus::SO3d::exp(omega);
-    Eigen::Matrix3d R1 = R_SO3_updated.matrix();
+    Eigen::Matrix3d R10 = R_SO3_updated.matrix();
 
-    Eigen::Quaterniond q_update;
-    q_update.w() = 1;
-    q_update.vec() = 0.5 * omega;
+    Eigen::Quaterniond q_update(Eigen::AngleAxisd(omega.norm(), omega.normalized()));
+    // q_update.w() = 1;
+    // q_update.vec() = 0.5 * omega;
     Eigen::Quaterniond R_q_updated = (R_q * q_update).normalized();
-    Eigen::Matrix3d R2 = R_q_updated.toRotationMatrix();
+    Eigen::Matrix3d R11 = R_q_updated.toRotationMatrix();
 
-    std::cout << "R1:\n"
-              << R1 << std::endl
+    std::cout << "R00:\n"
+              << R00 << std::endl
               << std::endl;
-    std::cout << "R2:\n"
-              << R2 << std::endl
+    std::cout << "R01:\n"
+              << R01 << std::endl
+              << std::endl;
+    std::cout << "R10:\n"
+              << R10 << std::endl
+              << std::endl;
+    std::cout << "R11:\n"
+              << R11 << std::endl
               << std::endl;
 
-    Eigen::Matrix3d R_error = R1 - R2;
-    std::cout << "the Frobenius Norm of the error matrix: " << R_error.norm() << std::endl;
-    std::cout << "the sum of the error matrix: " << R_error.sum() << std::endl;
+    std::cout << "R00-R01 norm: " << (R00-R01).norm() << std::endl;
+    std::cout << "R00-R10 norm: " << (R00-R10).norm() << std::endl;
+    std::cout << "R10-R11 norm: " << (R10-R11).norm() << std::endl;
+
+    // std::cout << "the Frobenius Norm of the error matrix: " << R_error.norm() << std::endl;
+    // std::cout << "the sum of the error matrix: " << R_error.sum() << std::endl;
 
     std::cout << std::endl;
 
