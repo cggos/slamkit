@@ -119,8 +119,11 @@ int main() {
     Eigen::Quaterniond P2q = R_q * Pq * R_q.inverse();
     Eigen::Vector3d P2 = P2q.vec();
 
+    Eigen::Vector3d P3 = R_q * P;
+
     std::cout << "P1: " << P1.transpose() << std::endl;
     std::cout << "P2: " << P2.transpose() << std::endl;
+    std::cout << "P3: " << P3.transpose() << std::endl;
 
     std::cout << std::endl;
 
