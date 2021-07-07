@@ -53,13 +53,14 @@ int main(int argc, char** argv) {
     cout << "SE3 updated = " << endl
          << SE3_updated.matrix() << endl;
 
-    std::cout << "\n------------------------------------------------------------------------------------\n" << std::endl;
+    std::cout << "\n------------------------------------------------------------------------------------\n"
+              << std::endl;
 
     // Adjoint of SE3
 
     Eigen::Matrix3d R_b = Eigen::AngleAxisd(M_PI / 4, Eigen::Vector3d(0, 1, 0)).toRotationMatrix();
     Sophus::SO3d SO3_b(R_b);
-    Sophus::Vector6d vec_b;
+    Sophus::SE3d::Tangent vec_b;
     vec_b.head(3) << 10.1793, -6.3204, 28.09113;
     vec_b.tail(3) = SO3_b.log();
 
@@ -67,18 +68,34 @@ int main(int argc, char** argv) {
     Sophus::SE3d SE3_wb(R, t_wb);
 
     Sophus::SE3d SE3_w = SE3_wb * Sophus::SE3d::exp(vec_b) * SE3_wb.inverse();
-    Sophus::Vector6d vec_w0 = SE3_w.log();
+    Sophus::SE3d::Tangent vec_w0 = SE3_w.log();
 
-    Sophus::Vector6d vec_w1 = Sophus::SE3d::vee(SE3_wb.matrix() * Sophus::SE3d::hat(vec_b) * SE3_wb.inverse().matrix());
+    Sophus::SE3d::Tangent vec_w1 = Sophus::SE3d::vee(SE3_wb.matrix() * Sophus::SE3d::hat(vec_b) * SE3_wb.inverse().matrix());
 
-    Sophus::Vector6d vec_w2 = Sophus::SE3d::exp(vec_w1).log();
+    Sophus::SE3d::Tangent vec_w2 = Sophus::SE3d::exp(vec_w1).log();
 
-    Sophus::Vector6d vec_b_adj = SE3_wb.Adj() * vec_b;
+    Sophus::SE3d::Tangent vec_b_adj = SE3_wb.Adj() * vec_b;
 
     std::cout << "vec_w0 :" << vec_w0.transpose() << std::endl;
     std::cout << "vec_w1 :" << vec_w1.transpose() << std::endl;
     std::cout << "vec_w2 :" << vec_w2.transpose() << std::endl;
     std::cout << "vec_b_adj :" << vec_b_adj.transpose() << std::endl;
+
+    std::cout << "\n------------------------------------------------------------------------------------\n"
+              << std::endl;
+
+    Sophus::Matrix4d sk_b0 = Sophus::SE3d::hat(vec_b);
+
+    Sophus::Matrix4d sk_b1;
+    sk_b1.setZero();
+    for (int i = 0; i < vec_b.size(); i++) {
+        sk_b1 += vec_b[i] * Sophus::SE3d::generator(i);
+    }
+
+    cout << "sk_b0: \n"
+         << sk_b0 << endl;
+    cout << "sk_b1: \n"
+         << sk_b1 << endl;
 
     std::cout << std::endl;
 
