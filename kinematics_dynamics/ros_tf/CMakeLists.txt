@@ -34,3 +34,6 @@ target_link_libraries(frame_tf_broadcaster ${catkin_LIBRARIES})
 
 add_executable(ros_tf_test src/ros_tf_test.cpp)
 target_link_libraries(ros_tf_test ${catkin_LIBRARIES})
+
+add_executable(show_path src/show_path.cpp)
+target_link_libraries(show_path ${catkin_LIBRARIES})
