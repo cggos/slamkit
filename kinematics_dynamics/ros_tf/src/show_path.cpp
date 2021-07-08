@@ -25,22 +25,20 @@ int main(int argc, char **argv) {
     double x = 0.0;
     double y = 0.0;
     double th = 0.0;
-    double vx = 0.1;
-    double vy = -0.1;
+    double vx = 1;
+    double vy = 1;
     double vth = 0.1;
+
+    double dt = 1.;
+
+    double delta_th = 0.0;
+    double delta_x = 0.0;
+    double delta_y = 0.0;
 
     ros::Rate loop_rate(1);
     while (ros::ok()) {
         current_time = ros::Time::now();
-        //compute odometry in a typical way given the velocities of the robot
-        double dt = 1.;
-        double delta_x = (vx * cos(th) - vy * sin(th)) * dt;
-        double delta_y = (vx * sin(th) + vy * cos(th)) * dt;
-        double delta_th = vth * dt;
-
-        x += delta_x;
-        y += delta_y;
-        th += delta_th;
+        //compute odometry in a typical way given the velocities of the robot        
 
         geometry_msgs::PoseStamped this_pose_stamped;
         this_pose_stamped.pose.position.x = x;
@@ -51,6 +49,16 @@ int main(int argc, char **argv) {
         this_pose_stamped.pose.orientation.y = goal_quat.y;
         this_pose_stamped.pose.orientation.z = goal_quat.z;
         this_pose_stamped.pose.orientation.w = goal_quat.w;
+
+        // double r = 5;
+        // x = r * cos(th);
+        // y = r * sin(th);  
+
+        // why
+        x += (vx * cos(th) - vy * sin(th)) * dt;
+        y += (vx * sin(th) + vy * cos(th)) * dt;
+
+        th += vth * dt;
 
         this_pose_stamped.header.stamp = current_time;
         this_pose_stamped.header.frame_id = "odom";
