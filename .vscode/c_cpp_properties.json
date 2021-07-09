@@ -6,7 +6,9 @@
                 "${workspaceFolder}/**",
                 "/opt/ros/kinetic/include/opencv-3.3.1-dev",
                 "/usr/include/eigen3",
-                "/opt/g2o/include"
+                "/opt/g2o/include",
+                "/usr/include/pcl-1.7",
+                "/opt/ros/kinetic/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
