@@ -1,5 +1,5 @@
 #include <opencv2/opencv.hpp>
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 #include <Eigen/Core>
 #include <vector>
 #include <string>
@@ -39,7 +39,7 @@ void DirectPoseEstimationMultiLayer(
         const cv::Mat &img2,
         const VecVector2d &px_ref,
         const vector<double> depth_ref,
-        Sophus::SE3 &T21
+        Sophus::SE3d &T21
 );
 
 // TODO implement this function
@@ -56,7 +56,7 @@ void DirectPoseEstimationSingleLayer(
         const cv::Mat &img2,
         const VecVector2d &px_ref,
         const vector<double> depth_ref,
-        Sophus::SE3 &T21
+        Sophus::SE3d &T21
 );
 
 // bilinear interpolation
@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
     }
 
     // estimates 01~05.png's pose using this information
-    Sophus::SE3 T_cur_ref;
+    Sophus::SE3d T_cur_ref;
 
     for (int i = 1; i < 6; i++) {  // 1~10
         cv::Mat img = cv::imread((fmt_others % i).str(), 0);
@@ -109,7 +109,7 @@ void DirectPoseEstimationSingleLayer(
         const cv::Mat &img2,
         const VecVector2d &px_ref,
         const vector<double> depth_ref,
-        Sophus::SE3 &T21
+        Sophus::SE3d &T21
 ) {
 
     // parameters
@@ -211,7 +211,7 @@ void DirectPoseEstimationSingleLayer(
         // TODO START YOUR CODE HERE
         Vector6d update;
         update = H.ldlt().solve(b);
-        T21 = Sophus::SE3::exp(update) * T21;
+        T21 = Sophus::SE3d::exp(update) * T21;
         // END YOUR CODE HERE
 
         cost /= nGood;
@@ -253,7 +253,7 @@ void DirectPoseEstimationMultiLayer(
         const cv::Mat &img2,
         const VecVector2d &px_ref,
         const vector<double> depth_ref,
-        Sophus::SE3 &T21
+        Sophus::SE3d &T21
 ) {
 
     // parameters

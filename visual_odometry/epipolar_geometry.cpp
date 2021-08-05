@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
-#include <sophus/so3.h>
+#include <sophus/so3.hpp>
 
 using namespace std;
 
@@ -68,8 +68,8 @@ void decompose_essential_mat(const Matrix3d &E, Matrix3d &R1, Matrix3d &R2, Vect
     Matrix3d t_wedge1 = m3U * m3R_z_p * m3S * m3U.transpose();
     Matrix3d t_wedge2 = m3U * m3R_z_n * m3S * m3U.transpose();
 
-    t1 = Sophus::SO3::vee(t_wedge1); 
-    t2 = Sophus::SO3::vee(t_wedge2);
+    t1 = Sophus::SO3d::vee(t_wedge1); 
+    t2 = Sophus::SO3d::vee(t_wedge2);
 
     R1 = m3U * m3R_z_p.transpose() * m3V.transpose();
     R2 = m3U * m3R_z_n.transpose() * m3V.transpose();

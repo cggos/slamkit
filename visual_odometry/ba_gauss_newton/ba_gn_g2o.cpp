@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 
 #include <g2o/stuff/sampler.h>
 #include <g2o/core/base_vertex.h>
@@ -14,7 +14,7 @@
 #include <g2o/core/optimization_algorithm_levenberg.h>
 #include <g2o/core/optimization_algorithm_dogleg.h>
 
-#include <g2o/solvers/cholmod/linear_solver_cholmod.h>
+// #include <g2o/solvers/cholmod/linear_solver_cholmod.h>
 #include <g2o/solvers/dense/linear_solver_dense.h>
 #include <g2o/solvers/eigen/linear_solver_eigen.h>
 #include <g2o/solvers/pcg/linear_solver_pcg.h>
@@ -26,30 +26,30 @@ typedef std::vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d>> 
 typedef std::vector<Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d>> VecVector2d;
 
 void SetSolverOptions(g2o::SparseOptimizer* optimizer, const std::string& param_linear_solver, const std::string& param_trust_region_strategy) {
-    typedef g2o::BlockSolver<g2o::BlockSolverTraits<6, 3> > BalBlockSolver;
+    std::unique_ptr<g2o::LinearSolver<g2o::BlockSolver_6_3::PoseMatrixType>> linearSolver;
 
-    BalBlockSolver::LinearSolverType *linearSolver = 0;
     if (param_linear_solver == "dense_schur") {
-        linearSolver = new g2o::LinearSolverDense<BalBlockSolver::PoseMatrixType>();
+        linearSolver = g2o::make_unique<g2o::LinearSolverDense<g2o::BlockSolver_6_3::PoseMatrixType>>();
     } else if (param_linear_solver == "sparse_schur") {
-        linearSolver = new g2o::LinearSolverCholmod<BalBlockSolver::PoseMatrixType>();
-        // AMD ordering , only needed for sparse cholesky solver
-        dynamic_cast<g2o::LinearSolverCholmod<BalBlockSolver::PoseMatrixType> * >(linearSolver)->setBlockOrdering(true);
+        linearSolver = g2o::make_unique<g2o::LinearSolverEigen<g2o::BlockSolver_6_3::PoseMatrixType>>();
+        // linearSolver = new g2o::LinearSolverCholmod<BalBlockSolver::PoseMatrixType>();
+        // // AMD ordering , only needed for sparse cholesky solver
+        // dynamic_cast<g2o::LinearSolverCholmod<BalBlockSolver::PoseMatrixType> * >(linearSolver)->setBlockOrdering(true);
     }
 
-    BalBlockSolver *solver_ptr = new BalBlockSolver(std::unique_ptr<BalBlockSolver::LinearSolverType>(linearSolver));
+    auto blockSolver = g2o::make_unique<g2o::BlockSolver_6_3>(std::move(linearSolver));
 
-    g2o::OptimizationAlgorithmWithHessian *solver;
+    g2o::OptimizationAlgorithmWithHessian *optimizationAlgorithm;
     if (param_trust_region_strategy == "levenberg_marquardt") {
-        solver = new g2o::OptimizationAlgorithmLevenberg(std::unique_ptr<BalBlockSolver>(solver_ptr));
+        optimizationAlgorithm = new g2o::OptimizationAlgorithmLevenberg(std::move(blockSolver));
     } else if (param_trust_region_strategy == "dogleg") {
-        solver = new g2o::OptimizationAlgorithmDogleg(std::unique_ptr<BalBlockSolver>(solver_ptr));
+        optimizationAlgorithm = new g2o::OptimizationAlgorithmDogleg(std::move(blockSolver));
     } else {
         std::cout << "Please check your trust_region_strategy parameter again.." << std::endl;
         exit(EXIT_FAILURE);
     }
 
-    optimizer->setAlgorithm(solver);
+    optimizer->setAlgorithm(optimizationAlgorithm);
 }
 
 int main(int argc, char **argv)
@@ -59,8 +59,8 @@ int main(int argc, char **argv)
     VecVector2d p2d;
     VecVector3d p3d;
     {
-        std::string p2d_file = "../../../bundle_adjustment/ba_gauss_newton/data/p2d.txt";
-        std::string p3d_file = "../../../bundle_adjustment/ba_gauss_newton/data/p3d.txt";
+        std::string p2d_file = "../ba_gauss_newton/data/p2d.txt";
+        std::string p3d_file = "../ba_gauss_newton/data/p3d.txt";
 
         std::ifstream fileP2D(p2d_file);
         std::ifstream fileP3D(p3d_file);
@@ -149,7 +149,7 @@ int main(int argc, char **argv)
         se3[i+3] = se3_g2o[i]; 
     }
 
-    std::cout << "estimated pose: \n" << Sophus::SE3::exp(se3).matrix() << std::endl;
+    std::cout << "estimated pose: \n" << Sophus::SE3d::exp(se3).matrix() << std::endl;
 
     return 0;
 }

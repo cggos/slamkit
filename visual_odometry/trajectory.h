@@ -11,11 +11,11 @@
 #include <unistd.h>
 
 #include <Eigen/Core>
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 #include <pangolin/pangolin.h>
 
 namespace cg {
-    void draw_trajectory(vector <Sophus::SE3> posesA, vector <Sophus::SE3> posesB, Sophus::SE3 se3AB) {
+    void draw_trajectory(vector <Sophus::SE3d> posesA, vector <Sophus::SE3d> posesB, Sophus::SE3d se3AB) {
         if (posesA.empty()) {
             cerr << "Trajectory is empty!" << endl;
             return;

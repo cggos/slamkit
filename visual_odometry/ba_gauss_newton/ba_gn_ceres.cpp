@@ -4,7 +4,7 @@
 
 #include <fstream>
 
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 
 #include <ceres/ceres.h>
 
@@ -24,7 +24,7 @@ public:
 
         Eigen::Map<const Eigen::Matrix<double,6,1>> se3(*parameters);
 
-        Sophus::SE3 T_SE3 = Sophus::SE3::exp(se3);
+        auto T_SE3 = Sophus::SE3d::exp(se3);
 
         Eigen::Vector3d Pc = T_SE3 * observed_P_;
 
@@ -137,7 +137,7 @@ int main(int argc, char **argv)
     ceres::Solve(options, &problem, &summary);
     std::cout << summary.BriefReport() << "\n";
 
-    std::cout << "estimated pose: \n" << Sophus::SE3::exp(se3).matrix() << std::endl;
+    std::cout << "estimated pose: \n" << Sophus::SE3d::exp(se3).matrix() << std::endl;
 
     return 0;
 }

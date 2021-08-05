@@ -5,7 +5,7 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 
 using namespace std;
 

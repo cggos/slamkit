@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <sophus/so3.h>
+#include <sophus/so3.hpp>
 
 #include "epipolar_geometry.h"
 
@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
     cout << "t2 = \n" << t2 << endl;
 
     // check t^R=E up to scale
-    Matrix3d tR = Sophus::SO3::hat(t1) * R1;
+    Matrix3d tR = Sophus::SO3d::hat(t1) * R1;
     cout << "t^R = \n" << tR << endl;
 
     return 0;

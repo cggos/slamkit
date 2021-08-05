@@ -20,9 +20,9 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 find_package(CSparse REQUIRED)
 include_directories(${CSPARSE_INCLUDE_DIR})
 
-find_package(Cholmod REQUIRED)
-include_directories(${CHOLMOD_INCLUDE_DIR})
-# ${CHOLMOD_LIBRARIES}
+# find_package(Cholmod REQUIRED)
+# include_directories(${CHOLMOD_INCLUDE_DIR})
+# # ${CHOLMOD_LIBRARIES}
 
 find_package(Eigen3 REQUIRED)
 if(Eigen3_FOUND)
@@ -32,9 +32,7 @@ endif()
 find_package(Sophus)
 if(Sophus_FOUND)
     include_directories(${Sophus_INCLUDE_DIRS})
-    # link_libraries(Sophus)
 endif()
-list(APPEND Sophus_LIBRARIES Sophus)
 
 find_package(OpenCV 3 REQUIRED COMPONENTS core imgproc highgui features2d calib3d video)
 if( OpenCV_FOUND )
@@ -49,9 +47,9 @@ endif()
 find_package(G2O REQUIRED)
 if(G2O_FOUND)
     include_directories(${G2O_INCLUDE_DIRS})
-    link_directories(/opt/g2o/lib)
+    link_directories($ENV{G2O_ROOT}/lib)
+    set(G2O_LIBS g2o_core g2o_stuff g2o_types_sba g2o_solver_csparse g2o_csparse_extension)
 endif()
-set(G2O_LIBS g2o_core g2o_stuff g2o_types_sba g2o_solver_csparse g2o_csparse_extension)
 
 # set(G2O_LIBS g2o_cli g2o_ext_freeglut_minimal g2o_simulator g2o_solver_slam2d_linear
 #     g2o_types_icp g2o_types_slam2d g2o_types_sba g2o_types_slam3d g2o_core g2o_interface
@@ -80,10 +78,10 @@ add_executable( pose_estimation_3d3d_01 pose_estimation_3d3d_01.cpp)
 target_link_libraries( pose_estimation_3d3d_01 pose_estimation )
 
 add_executable(pose_estimation_3d3d_02 pose_estimation_3d3d_02.cpp)
-target_link_libraries( pose_estimation_3d3d_02 ${Pangolin_LIBRARIES} ${Sophus_LIBRARIES} pose_estimation)
+target_link_libraries( pose_estimation_3d3d_02 ${Pangolin_LIBRARIES} pose_estimation)
 
 add_executable( direct_method direct_method.cpp )
-target_link_libraries( direct_method ${OpenCV_LIBS} ${Pangolin_LIBRARIES} ${Sophus_LIBRARIES} )
+target_link_libraries( direct_method ${OpenCV_LIBS} ${Pangolin_LIBRARIES})
 
 add_executable(direct_sparse direct_sparse.cpp)
 target_link_libraries(direct_sparse  ${OpenCV_LIBS} ${G2O_LIBS} pose_estimation)
@@ -92,4 +90,4 @@ add_executable(direct_semidense direct_semidense.cpp)
 target_link_libraries(direct_semidense ${OpenCV_LIBS} ${G2O_LIBS} pose_estimation)
 
 add_executable(e2rt e2rt.cpp epipolar_geometry.cpp)
-target_link_libraries( e2rt ${Sophus_LIBRARIES} ${OpenCV_LIBS} )
+target_link_libraries(e2rt ${OpenCV_LIBS})

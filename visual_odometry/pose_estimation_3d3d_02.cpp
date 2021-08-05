@@ -7,7 +7,7 @@
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 
 #include "pose_estimation.h"
 #include "trajectory.h"
@@ -26,11 +26,11 @@ int main()
     }
     Eigen::Vector3d v3T;
     Eigen::Quaterniond q;
-    Sophus::SE3 se3;
+    Sophus::SE3d se3;
     std::vector<cv::Point3f> ptsTe;
     std::vector<cv::Point3f> ptsTg;
-    std::vector<Sophus::SE3> vse3_e;
-    std::vector<Sophus::SE3> vse3_g;
+    std::vector<Sophus::SE3d> vse3_e;
+    std::vector<Sophus::SE3d> vse3_g;
     double time_e, tx_e, ty_e, tz_e, qx_e, qy_e, qz_e, qw_e;
     double time_g, tx_g, ty_g, tz_g, qx_g, qy_g, qz_g, qw_g;
     while(!fileCompare.eof()){
@@ -44,7 +44,7 @@ int main()
 
         ptsTe.push_back(cv::Point3f(v3T[0], v3T[1], v3T[2]));
         se3.translation() = v3T;
-        se3.so3() = Sophus::SO3(q);
+        se3.so3() = Sophus::SO3d(q);
         vse3_e.push_back(se3);
         
         v3T = Eigen::Vector3d(tx_g,ty_g,tz_g);  
@@ -52,7 +52,7 @@ int main()
 
         ptsTg.push_back(cv::Point3f(v3T[0], v3T[1], v3T[2]));
         se3.translation() = v3T;
-        se3.so3() = Sophus::SO3(q);
+        se3.so3() = Sophus::SO3d(q);
         vse3_g.push_back(se3);
     }
 
@@ -60,7 +60,7 @@ int main()
     Eigen::Vector3d t;
     pose_estimation_3d3d(ptsTg, ptsTe, R, t);
 
-    Sophus::SE3 se3_ge = Sophus::SE3(R, t);
+    Sophus::SE3d se3_ge = Sophus::SE3d(R, t);
 
     cg::draw_trajectory(vse3_g, vse3_e, se3_ge);
 
