@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <launch>
+
+  <node pkg="pcl_ros" type="pcd_to_pointcloud" name="pcd_to_pointcloud_node" args="map.pcd 0.05"/>
+  
+  <node pkg="rviz" type="rviz" name="rviz" args="-d ../test_octomap.rviz"/>
+
   <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
 
     <!-- resolution in meters per pixel -->
-    <param name="resolution" value="0.1" />
+    <param name="resolution" value="0.05" />
 
     <!-- name of the fixed frame, needs to be "/map" for SLAM -->
-    <param name="frame_id" type="string" value="/stereo_rect_cloud_optical_frame" />
+    <param name="frame_id" type="string" value="/base_link" />
 
     <!-- max range / depth resolution of the kinect in meter -->
     <param name="sensor_model/max_range" value="50.0" />
@@ -18,7 +23,7 @@
     <param name="pointcloud_min_z" value="0" />
 
     <!-- topic from where pointcloud2 messages are subscribed -->
-    <remap from="cloud_in" to="/stereo_rect/stereo_recon/cloud" />
+    <remap from="cloud_in" to="/cloud_pcd" />
 
   </node>
 </launch>

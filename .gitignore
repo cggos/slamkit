@@ -6,3 +6,6 @@ cmake-build-debug/
 _build/
 _static/
 _templates/
+
+log/
+*cache*

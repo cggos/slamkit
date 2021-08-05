@@ -1,14 +1,14 @@
-cmake_minimum_required( VERSION 2.8 )
+cmake_minimum_required( VERSION 3.5 )
 
 project(mapping)
 
-set( CMAKE_BUILD_TYPE Release )
+set( CMAKE_BUILD_TYPE Debug )
 set( CMAKE_CXX_FLAGS "-std=c++11 -march=native -O3 -fopenmp" )
 
 set(TUM_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tum_data_rgbd.h)
 if(NOT EXISTS ${TUM_SRC})
     file(DOWNLOAD
-            https://raw.githubusercontent.com/cggos/slam_park_cg/master/slam_dataset/tum/tum_data_rgbd.h
+            https://raw.githubusercontent.com/cggos/slam_park/master/slam_dataset/tum/tum_data_rgbd.h
             ${TUM_SRC}
             SHOW_PROGRESS)
 endif()
@@ -21,16 +21,14 @@ endif()
 find_package(Sophus)
 if(Sophus_FOUND)
     include_directories( ${Sophus_INCLUDE_DIRS} )
-    # link_libraries(Sophus)
 endif()
-list(APPEND Sophus_LIBRARIES Sophus)
 
 find_package( OpenCV 3 REQUIRED COMPONENTS core imgproc highgui )
 if( OpenCV_FOUND )
     include_directories( ${OpenCV_INCLUDE_DIRS} )
 endif()
 
-find_package( PCL REQUIRED COMPONENT common io filters )
+find_package( PCL REQUIRED COMPONENTS common io filters )
 if( PCL_FOUND )
     include_directories( ${PCL_INCLUDE_DIRS} )
     add_definitions( ${PCL_DEFINITIONS} )
@@ -44,5 +42,5 @@ endif()
 add_executable( mapping_rgbd mapping_rgbd.cpp )
 target_link_libraries( mapping_rgbd ${OpenCV_LIBS} ${PCL_LIBRARIES} ${OCTOMAP_LIBRARIES} )
 
-add_executable(mapping_mono_dense mapping_mono_dense.cpp )
-target_link_libraries( mapping_mono_dense ${OpenCV_LIBS} ${Sophus_LIBRARIES} )
+add_executable(mapping_mono_dense mapping_mono_dense.cpp)
+target_link_libraries(mapping_mono_dense ${OpenCV_LIBS})
