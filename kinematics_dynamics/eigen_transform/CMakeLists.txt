@@ -7,10 +7,15 @@ set( CMAKE_CXX_FLAGS "-std=c++11 -O3" )
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
+find_package(fmt REQUIRED)
+if(fmt_FOUND)
+  message("-- FOUND fmt")
+endif()
+
 find_package(Sophus REQUIRED)
 if(Sophus_FOUND)
   include_directories(${Sophus_INCLUDE_DIRS})
-  # set(Sophus_LIBRARIES Sophus)
+  set(Sophus_LIBRARIES fmt) # sophus
 endif()
 
 find_package(Ceres REQUIRED)
