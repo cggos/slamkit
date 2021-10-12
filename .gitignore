@@ -9,3 +9,5 @@ _templates/
 
 log/
 *cache*
+
+*.out
