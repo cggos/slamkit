@@ -8,7 +8,7 @@ set( CMAKE_CXX_FLAGS "-std=c++11 -march=native -O3 -fopenmp" )
 set(TUM_SRC ${CMAKE_CURRENT_SOURCE_DIR}/tum_data_rgbd.h)
 if(NOT EXISTS ${TUM_SRC})
     file(DOWNLOAD
-            https://raw.githubusercontent.com/cggos/slam_park/master/slam_dataset/tum/tum_data_rgbd.h
+            https://raw.githubusercontent.com/cggos/slamkit/master/slam_dataset/tum/tum_data_rgbd.h
             ${TUM_SRC}
             SHOW_PROGRESS)
 endif()

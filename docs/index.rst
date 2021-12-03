@@ -1,9 +1,9 @@
-.. SLAMPark documentation master file, created by
+.. SLAMKit documentation master file, created by
    sphinx-quickstart on Tue May 19 23:25:56 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to SLAMPark's documentation!
+Welcome to SLAMKit's documentation!
 ====================================
 
 .. image:: imgs/slam.jpg
@@ -13,7 +13,7 @@ Welcome to SLAMPark's documentation!
 SLAM Study Notes:
 
 * `SLAM Blog (CSDN) <https://blog.csdn.net/u011178262/article/category/7456224/>`_
-* `SLAM Notes (github.io) <https://cggos.github.io/archive.html?tag=SLAM>`_
+* `SLAM Blog (github.io) <https://cggos.github.io/archive.html?tag=SLAM>`_
 * `SLAM Notes (LaTeX on Overleaf) <https://www.overleaf.com/read/drmrxvnphrck/>`_
 
 
@@ -22,7 +22,7 @@ SLAM Basis
 
 * Mathematics & Scientific Computing
 
-  * https://github.com/cggos/sci_cmp
+  * https://github.com/cggos/scikit
 
 * Computer Vision
 
@@ -45,7 +45,7 @@ SLAM Basis
 
 * ROS
 
-  * https://github.com/cggos/ros_park
+  * https://github.com/cggos/roskit
 
 
 

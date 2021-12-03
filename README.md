@@ -1,19 +1,5 @@
-# SLAM Park
+# SLAM Kit
 
-[![Documentation Status](https://readthedocs.org/projects/slam-park/badge/?version=latest)](https://slam-park.readthedocs.io/zh/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/slamkit/badge/?version=latest)](https://slamkit.readthedocs.io/zh_CN/latest/?badge=latest)
 
-
------
-
-## Sphinx Docs
-
-* install requirements
-  ```sh
-  $ pip install -r docs/requirements.txt
-  ```
-
-* build
-  ```sh
-  cd docs
-  make html
-  ```
+---

@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'SLAMPark'
+project = 'SLAM Kit'
 copyright = '2021, Gavin Gao'
 author = 'Gavin Gao'
 # The short X.Y version.
