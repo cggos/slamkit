@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(aruco_detection)
+project(apriltag_demos)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE "Release")
@@ -17,8 +17,6 @@ list(APPEND Sophus_LIBRARIES Sophus)
 find_package(Pangolin)
 find_package(apriltag)
 include_directories(${EIGEN3_INCLUDE_DIR} ${Sophus_INCLUDE_DIRS} ${Pangolin_INCLUDE_DIRS} ${apriltag_INCLUDE_DIRS})
-
-add_executable(aruco_detection aruco_detection.cpp)
 
 add_executable(apriltag_opencv_demo apriltag_opencv_demo.cc)
 target_link_libraries(apriltag_opencv_demo ${OpenCV_LIBRARIES} ${Sophus_LIBRARIES} ${Pangolin_LIBRARIES} apriltag)    
