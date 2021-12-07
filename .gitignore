@@ -11,3 +11,5 @@ log/
 *cache*
 
 *.out
+
+.vscode/
