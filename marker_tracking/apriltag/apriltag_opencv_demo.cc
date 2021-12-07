@@ -25,12 +25,13 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the Regents of The University of Michigan.
 */
 
+#define FMT_HEADER_ONLY
+
 #include <math.h>
 #include <pangolin/pangolin.h>
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 
 #include <Eigen/Core>
-#include <boost/format.hpp>
 #include <iostream>
 #include <opencv2/core/eigen.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -59,7 +60,7 @@ Eigen::Vector3d cam_t;
 Eigen::Vector3d t_last, t_curr;
 double update_t = 0;
 
-typedef std::vector<Sophus::SE3, Eigen::aligned_allocator<Sophus::SE3> > VecSE3;
+typedef std::vector<Sophus::SE3d, Eigen::aligned_allocator<Sophus::SE3d> > VecSE3;
 typedef std::vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > VecVec3d;
 typedef std::vector<Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> > VecVec2d;
 // apriltag 4-corner 3d points and 2d pixel
@@ -411,7 +412,7 @@ int main(int argc, char *argv[]) {
             for (int i = 0; i < 4; i++) {
                 tagpixels.push_back(Eigen::Vector2d(det->p[i][0], det->p[i][1]));
             }
-            Sophus::SE3 SE3_Rt(cam_R, cam_t);
+            Sophus::SE3d SE3_Rt(cam_R, cam_t);
             poses.push_back(SE3_Rt);
 
             // last_img = gray.clone();
