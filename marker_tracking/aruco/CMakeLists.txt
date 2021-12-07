@@ -13,3 +13,4 @@ if(OpenCV_FOUND)
 endif()
 
 add_executable(aruco_detect_live aruco_detect_live.cpp)
+add_executable(aruco_detect_img aruco_detect_img.cpp)

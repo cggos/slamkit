@@ -6,21 +6,6 @@
 #include "aruco_detection.h"
 
 int main() {
-  // cv::Mat markerImage;
-  // cv::aruco::drawMarker(dictionary, 23, 200, markerImage, 1);
-  // cv::imwrite("marker23.png", markerImage);
-
-  // cv::Mat inputImage;
-  // inputImage = cv::imread("marker23.png");
-
-  // std::vector<int> markerIds;
-  // std::vector<std::vector<cv::Point2f>> markerCorners, rejectedCandidates;
-  // cv::Ptr<cv::aruco::DetectorParameters> parameters = cv::aruco::DetectorParameters::create();
-  // cv::aruco::detectMarkers(inputImage, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
-
-  // cv::Mat outputImage = inputImage.clone();
-  // cv::aruco::drawDetectedMarkers(outputImage, markerCorners, markerIds);
-
   cv::VideoCapture inputVideo;
   inputVideo.open(0);
   while (inputVideo.grab()) {
