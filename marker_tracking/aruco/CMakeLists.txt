@@ -12,4 +12,4 @@ if(OpenCV_FOUND)
 	link_libraries(${OpenCV_LIBS})
 endif()
 
-add_executable(aruco_detection aruco_detection.cpp)
+add_executable(aruco_detect_live aruco_detect_live.cpp)
