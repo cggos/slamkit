@@ -73,6 +73,26 @@ Quaterniond slerp(double t, Quaterniond &q1, Quaterniond &q2) {
     return q_slerp;
 }
 
+// Take poses at times t1 and t2. Interpolate the pose at time t.
+Eigen::Affine3d pose_interp(double t, double t1, double t2, Eigen::Affine3d const& aff1, Eigen::Affine3d const& aff2) {
+  // assume here t1 <= t <= t2
+  double alpha = 0.0;
+  if (t2 != t1)
+    alpha = (t - t1) / (t2 - t1);
+
+  Eigen::Quaternion<double> rot1(aff1.linear());
+  Eigen::Quaternion<double> rot2(aff2.linear());
+
+  Eigen::Vector3d trans1 = aff1.translation();
+  Eigen::Vector3d trans2 = aff2.translation();
+
+  Eigen::Affine3d result;
+  result.translation() = (1.0 - alpha) * trans1 + alpha * trans2;
+  result.linear()      = rot1.slerp(alpha, rot2).toRotationMatrix();
+
+  return result;
+}
+
 int main(int argc, char **argv) {
 
     double t_img(700901880170406), t1_imu(700901879318945), t2_imu(700901884127851);
