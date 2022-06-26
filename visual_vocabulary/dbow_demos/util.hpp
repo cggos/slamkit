@@ -8,9 +8,12 @@
 #include <string>
 #include <vector>
 
-#ifdef WITH_DBOW3
-#include <DBoW3/DBoW3.h>
-using namespace DBoW3;
+#if defined(WITH_DBOW2) && defined(WITH_DBOW3)
+#undef WITH_DBOW3
+#endif
+
+#if not defined(WITH_DBOW2) && not defined(WITH_DBOW3)
+#define WITH_DBOW2
 #endif
 
 #ifdef WITH_DBOW2
@@ -18,6 +21,11 @@ using namespace DBoW3;
 #include "DBoW2/TemplatedVocabulary.h"
 typedef DBoW2::TemplatedVocabulary<DBoW2::FORB::TDescriptor, DBoW2::FORB> ORBVocabulary;
 using namespace DBoW2;
+#endif
+
+#ifdef WITH_DBOW3
+#include <DBoW3/DBoW3.h>
+using namespace DBoW3;
 #endif
 
 using namespace cv;
