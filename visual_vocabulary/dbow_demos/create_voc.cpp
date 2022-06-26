@@ -1,5 +1,3 @@
-#include <DBoW3/DBoW3.h>
-
 #include "util.hpp"
 
 int main(int argc, char** argv) {
@@ -7,11 +5,22 @@ int main(int argc, char** argv) {
 
   if (descriptors.empty()) return -1;
 
-  cout << "creating vocabulary, please wait ... " << endl;
+#ifdef WITH_DBOW2
+  cout << "creating vocabulary with DBoW2, please wait ... " << endl;
+  ORBVocabulary vocab;
+  std::vector<std::vector<cv::Mat>> vv_descs;
+  vv_descs.resize(descriptors.size());
+  for (int i = 0; i < vv_descs.size(); i++) vv_descs[i] = to_descriptor_vector(descriptors[i]);
+  vocab.create(vv_descs);
+  vocab.saveToTextFile("voc.txt");
+#endif
+#ifdef WITH_DBOW3
+  cout << "creating vocabulary with DBoW3, please wait ... " << endl;
   DBoW3::Vocabulary vocab;
   vocab.create(descriptors);
+  vocab.save("voc.yml.gz");
+#endif
   cout << "vocabulary info: " << vocab << endl;
-  vocab.save("vocabulary.yml.gz");
 
   cout << "done" << endl;
 

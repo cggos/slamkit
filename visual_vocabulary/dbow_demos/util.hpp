@@ -8,6 +8,18 @@
 #include <string>
 #include <vector>
 
+#ifdef WITH_DBOW3
+#include <DBoW3/DBoW3.h>
+using namespace DBoW3;
+#endif
+
+#ifdef WITH_DBOW2
+#include "DBoW2/FORB.h"
+#include "DBoW2/TemplatedVocabulary.h"
+typedef DBoW2::TemplatedVocabulary<DBoW2::FORB::TDescriptor, DBoW2::FORB> ORBVocabulary;
+using namespace DBoW2;
+#endif
+
 using namespace cv;
 using namespace std;
 
@@ -58,4 +70,11 @@ std::vector<Mat> get_imgs(const std::string& data_dir) {
   cout << "descriptors size: " << descriptors.size() << " features." << endl;
 
   return descriptors;
+}
+
+std::vector<cv::Mat> to_descriptor_vector(const cv::Mat& Descriptors) {
+  std::vector<cv::Mat> vDesc;
+  vDesc.reserve(Descriptors.rows);
+  for (int j = 0; j < Descriptors.rows; j++) vDesc.push_back(Descriptors.row(j));
+  return vDesc;
 }
