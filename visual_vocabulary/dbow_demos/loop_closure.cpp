@@ -1,62 +1,64 @@
-#include "DBoW3/DBoW3.h"
+#include "util.hpp"
 
-#include <iostream>
-#include <vector>
-#include <string>
+int main(int argc, char** argv) {
+  bool bvoc = false;
+  std::string str_voc_file;
+#ifdef WITH_DBOW2
+  str_voc_file = "voc.txt";
+  ORBVocabulary vocab;
+  bvoc = vocab.loadFromTextFile(str_voc_file);
+#endif
+#ifdef WITH_DBOW3
+  str_voc_file = "voc.yml.gz";
+  DBoW3::Vocabulary vocab(str_voc_file);
+  bvoc = !vocab.empty();
+#endif
+  if (!bvoc) {
+    cerr << "Wrong path to vocabulary. " << endl;
+    cerr << "Falied to open at: " << str_voc_file << endl;
+    exit(-1);
+  }
+  cout << "Vocabulary loaded!" << endl << endl;
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/features2d/features2d.hpp>
+  const std::vector<Mat>& descriptors = get_imgs(argv[1]);
+  if (descriptors.empty()) return -1;
 
-using namespace cv;
-using namespace std;
-
-int main( int argc, char** argv )
-{
-    DBoW3::Vocabulary vocab("./vocabulary.yml.gz");
-    // DBoW3::Vocabulary vocab("./vocab_larger.yml.gz");  // use large vocab if you want:
-    if ( vocab.empty() ) {
-        cerr<<"Vocabulary does not exist."<<endl;
-        return 1;
+  cout << "comparing images with images " << endl;
+  BowVector bow_vec0, bow_vec1;
+  FeatureVector feat_vec0, feat_vec1;
+  for (int i = 0; i < descriptors.size(); i++) {
+#ifdef WITH_DBOW2
+    // Feature vector associate features with nodes in the 4th level (from leaves up)
+    // We assume the vocabulary tree has 6 levels, change the 4 otherwise
+    vocab.transform(to_descriptor_vector(descriptors[i]), bow_vec0, feat_vec0, 4);
+#endif
+#ifdef WITH_DBOW3
+    vocab.transform(descriptors[i], bow_vec0);
+#endif
+    for (int j = i; j < descriptors.size(); j++) {
+#ifdef WITH_DBOW2
+      vocab.transform(to_descriptor_vector(descriptors[j]), bow_vec1, feat_vec1, 4);
+#endif
+#ifdef WITH_DBOW3
+      vocab.transform(descriptors[j], bow_vec1);
+#endif
+      double score = vocab.score(bow_vec0, bow_vec1);
+      cout << "image " << i << " vs image " << j << " : " << score << endl;
     }
+    cout << endl;
+  }
 
-    vector<Mat> images;
-    for ( int i=0; i<10; i++ ) {
-        string path = "./data/"+to_string(i+1)+".png";
-        images.push_back( imread(path) );
-    }
+#ifdef WITH_DBOW3
+  cout << "comparing images with database " << endl;
+  DBoW3::Database db(vocab, false, 0);
+  for (int i = 0; i < descriptors.size(); i++) db.add(descriptors[i]);
+  cout << "database info: " << db << endl;
+  for (int i = 0; i < descriptors.size(); i++) {
+    DBoW3::QueryResults ret;
+    db.query(descriptors[i], ret, 4);  // max result=4
+    cout << "searching for image " << i << " returns " << ret << endl << endl;
+  }
+#endif
 
-    Ptr< Feature2D > detector = ORB::create();
-    vector<Mat> descriptors;
-    for ( Mat& image:images ) {
-        vector<KeyPoint> keypoints;
-        Mat descriptor;
-        detector->detectAndCompute( image, Mat(), keypoints, descriptor );
-        descriptors.push_back( descriptor );
-    }
-
-    cout << "comparing images with images " << endl;
-    for ( int i=0; i<images.size(); i++ ) {
-        DBoW3::BowVector v1;
-        vocab.transform( descriptors[i], v1 );
-        for ( int j=i; j<images.size(); j++ ) {
-            DBoW3::BowVector v2;
-            vocab.transform( descriptors[j], v2 );
-            double score = vocab.score(v1, v2);
-            cout<<"image "<<i<<" vs image "<<j<<" : "<<score<<endl;
-        }
-        cout<<endl;
-    }
-
-    cout << "comparing images with database " << endl;
-    DBoW3::Database db( vocab, false, 0);
-    for ( int i=0; i<descriptors.size(); i++ )
-        db.add(descriptors[i]);
-    cout << "database info: " << db << endl;
-    for ( int i=0; i<descriptors.size(); i++ ) {
-        DBoW3::QueryResults ret;
-        db.query( descriptors[i], ret, 4);      // max result=4
-        cout<<"searching for image "<<i<<" returns "<<ret<<endl<<endl;
-    }
-    cout<<"done."<<endl;
+  cout << "done." << endl;
 }
