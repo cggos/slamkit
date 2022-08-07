@@ -6,14 +6,22 @@
 Welcome to SLAMKit's documentation!
 ====================================
 
+* `Source Code (GitHub) <https://github.com/cggos/slamkit>`_
+
 .. image:: imgs/slam.jpg
 
-* `Simultaneous localization and mapping (wikipedia)] <https://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping/>`_
 
-SLAM Study Notes:
+Study Notes
+-------------------------
+
+* `Simultaneous localization and mapping (Wikipedia) <https://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping>`_
 
 * `SLAM Blog (CSDN) <https://blog.csdn.net/u011178262/article/category/7456224/>`_
-* `SLAM Blog (github.io) <https://cggos.github.io/archive.html?tag=SLAM>`_
+
+* SLAM Blog (CGABC)   
+   * `vSLAM <https://cgabc.xyz/tags/Visual-SLAM/>`_
+   * `LiDAR SLAM <https://cgabc.xyz/tags/LiDAR-SLAM/>`_
+
 * `SLAM Notes (LaTeX on Overleaf) <https://www.overleaf.com/read/drmrxvnphrck/>`_
 
 
@@ -22,18 +30,18 @@ SLAM Basis
 
 * Mathematics & Scientific Computing
 
-  * https://github.com/cggos/scikit
+  * https://sci.cgabc.xyz/
 
 * Computer Vision
 
-  * https://github.com/cggos/cgocv
-  * https://cggos.github.io/archive.html?tag=ComputerVision
+  * https://github.com/cggos/ccv
+  * https://cgabc.xyz/tags/Computer-Vision/
 
 * Kinematics and Dynamics
 
 * State Estimation
 
-  * https://github.com/cggos/state_estimation_cg
+  * https://github.com/cggos/state_estimation
 
 * Sensors
 
@@ -41,11 +49,11 @@ SLAM Basis
 
   * Sensor Calibration
 
-    * https://cggos.github.io/robotics/robot-calibration.html
+    * https://cgabc.xyz/cl6ir5sdl006mgldj2ho4bojs/
 
 * ROS
 
-  * https://github.com/cggos/roskit
+  * https://github.com/cggos/rokit
 
 
 
