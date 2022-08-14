@@ -18,9 +18,7 @@ Study Notes
 
 * `SLAM Blog (CSDN) <https://blog.csdn.net/u011178262/article/category/7456224/>`_
 
-* SLAM Blog (CGABC)   
-   * `vSLAM <https://cgabc.xyz/tags/Visual-SLAM/>`_
-   * `LiDAR SLAM <https://cgabc.xyz/tags/LiDAR-SLAM/>`_
+* `SLAM Blog (CGABC) <https://cgabc.xyz/categories/SLAM/>`_
 
 * `SLAM Notes (LaTeX on Overleaf) <https://www.overleaf.com/read/drmrxvnphrck/>`_
 
@@ -35,7 +33,7 @@ SLAM Basis
 * Computer Vision
 
   * https://github.com/cggos/ccv
-  * https://cgabc.xyz/tags/Computer-Vision/
+  * https://cgabc.xyz/categories/Computer-Vision/
 
 * Kinematics and Dynamics
 
@@ -49,7 +47,7 @@ SLAM Basis
 
   * Sensor Calibration
 
-    * https://cgabc.xyz/cl6ir5sdl006mgldj2ho4bojs/
+    * https://cgabc.xyz/posts/b7e7791e/
 
 * ROS
 
