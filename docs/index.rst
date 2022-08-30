@@ -139,34 +139,9 @@ SLAM QA
 .. toctree::
    :maxdepth: 1
    :hidden:
-   :caption: GNSS & INS
-
-   slam_gnss_ins/index
-
-
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
-   :caption: Multiple Sensor Fusion
-
-   slam_msf/index
-
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
    :caption: SLAM Benchmark
 
    slam_benchmark/index
-
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
-   :caption: SLAM Applications
-
-   slam_modules/index
 
 
 .. toctree::
