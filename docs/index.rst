@@ -30,28 +30,23 @@ SLAM Basis
 
   * https://sci.cgabc.xyz/
 
-* Computer Vision
-
-  * https://github.com/cggos/ccv
-  * https://cgabc.xyz/categories/Computer-Vision/
-
 * Kinematics and Dynamics
+
+* Computer Vision
+  
+  * https://cv.cgabc.xyz/
 
 * State Estimation
 
-  * https://github.com/cggos/state_estimation
+  * https://est.cgabc.xyz/
 
-* Sensors
+* Multi-Sensor Fusion
 
-  * Sensor Types
+  * https://msf.cgabc.xyz/
 
-  * Sensor Calibration
+* Robotics
 
-    * https://cgabc.xyz/posts/b7e7791e/
-
-* ROS
-
-  * https://github.com/cggos/rokit
+  * https://robot.cgabc.xyz/
 
 
 
@@ -74,21 +69,6 @@ Localization & Mapping
 
 
 
-GNSS & INS
--------------------------
-
-* INS
-* GNSS
-* GIS
-* Geomagnetics
-
-
-
-Multiple Sensor Fusion
--------------------------
-
-
-
 SLAM Benchmark
 -------------------------
 
@@ -101,7 +81,6 @@ SLAM Benchmark
 SLAM Applications
 -------------------------
 
-* SLAM Modules
 * AR (6 DoF)
 * Drone (:math:`\approx` 4 DoF)
 * Ground Mobile Robot (3 DoF)
