@@ -98,14 +98,6 @@ SLAM QA
 .. toctree::
    :maxdepth: 1
    :hidden:
-   :caption: SLAM Basis
-
-   slam_basis/index
-
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
    :caption: Localization & Mapping
 
    slam_framworks/index
