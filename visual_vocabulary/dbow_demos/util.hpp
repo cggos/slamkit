@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
@@ -31,14 +32,18 @@ using namespace DBoW3;
 using namespace cv;
 using namespace std;
 
-#define DATA_TUM
-const int MAX_NUM = 10;
+// #define DATA_TUM
+const int MAX_NUM = 1000;
 
-std::vector<Mat> get_imgs(const std::string& data_dir) {
+std::vector<std::string> load_paths(const std::string& data_dir) {
   vector<string> rgb_files;
 #ifndef DATA_TUM
-  for (int i = 0; i < 5; i++) {
-    string path = data_dir + "/" + to_string(i + 1) + ".png";
+  for (int i = 0; i < MAX_NUM; i++) {
+    // std::string name = std::to_string(i+1);
+    std::stringstream ss;
+    ss << std::setw(5) << std::setfill('0') << i;
+    std::string name = ss.str();
+    string path = data_dir + "/" + name + ".png";
     rgb_files.push_back(path);
   }
 #else
@@ -60,6 +65,11 @@ std::vector<Mat> get_imgs(const std::string& data_dir) {
   }
   fin.close();
 #endif
+  return rgb_files;
+}
+
+std::vector<Mat> get_imgs(const std::string& data_dir) {
+  vector<string> rgb_files = load_paths(data_dir);
 
   cout << "generating features ... " << endl;
   vector<Mat> descriptors;
